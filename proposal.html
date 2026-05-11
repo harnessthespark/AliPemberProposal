@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F5F0E8">
+<title>A small proposal — for Ali</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --essentials:      #5C7B9C;
+    --essentials-soft: #DCE3EE;
+    --connected:       #4A7C59;
+    --connected-soft:  #D6EDDF;
+    --bespoke:         #B07A5A;
+    --bespoke-soft:    #ECDACA;
+    --sail:            #2C5F6E;
+    --sand:            #F5F0E8;
+    --sand-warm:       #EFE7D6;
+    --sand-deep:       #E5DBC4;
+    --ink:             #2A2420;
+    --ink-soft:        #5C534A;
+    --ink-faint:       #8A7F73;
+    --paper:           #FBF7EF;
+    --line:            #D9CFB8;
+
+    --serif: 'Playfair Display', 'Iowan Old Style', Georgia, serif;
+    --sans:  'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+    --shadow-soft: 0 1px 2px rgba(42, 36, 32, 0.04), 0 8px 24px rgba(42, 36, 32, 0.06);
+    --shadow-lift: 0 2px 4px rgba(42, 36, 32, 0.06), 0 16px 40px rgba(42, 36, 32, 0.08);
+
+    --r-sm: 6px;
+    --r-md: 12px;
+    --r-lg: 20px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--sand);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1;
+    opacity: 0.32; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.14 0 0 0 0 0.13 0 0 0 0.07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--serif); font-weight: 500;
+    letter-spacing: -0.01em; color: var(--ink);
+    margin: 0; line-height: 1.15;
+  }
+  p { margin: 0 0 0.7em; color: var(--ink-soft); }
+  em.swash { font-family: var(--serif); font-style: italic; font-weight: 400; }
+
+  .kicker {
+    font-family: var(--sans); font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    margin: 0 0 1.4em; display: inline-flex; align-items: center; gap: 0.7em;
+  }
+  .kicker::before, .kicker::after {
+    content: ''; width: 28px; height: 1px;
+    background: var(--ink-faint); opacity: 0.6;
+  }
+
+  /* ---------- BRAND BAR ---------- */
+  .brand-bar {
+    position: relative; z-index: 2;
+    padding: clamp(1.6rem, 4vw, 2.4rem) 1.5rem 0;
+    text-align: center;
+    opacity: 0;
+    animation: rise 900ms 0s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .brand-bar img {
+    width: clamp(140px, 20vw, 200px);
+    height: auto;
+    display: inline-block;
+  }
+  .brand-bar .brand-tag {
+    display: block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+    margin-top: 0.4rem;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative; z-index: 2;
+    padding: clamp(1.6rem, 4vw, 2.6rem) clamp(1.2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+    max-width: 760px; margin: 0 auto; text-align: center;
+    opacity: 0; transform: translateY(12px);
+    animation: rise 1s 0.2s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 500; line-height: 1.05; letter-spacing: -0.025em;
+  }
+  .hero h1 .swash { font-style: italic; font-weight: 400; color: var(--sail); }
+  .hero .for {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-faint); font-size: 0.95rem;
+    margin-top: 0.6em;
+  }
+
+  /* ---------- HELLO LETTER ---------- */
+  .letter-wrap {
+    position: relative; z-index: 2;
+    max-width: 660px; margin: 0 auto;
+    padding: 0 clamp(1.2rem, 5vw, 3rem) clamp(2rem, 4vw, 3rem);
+    opacity: 0; transform: translateY(16px);
+    animation: rise 1s 0.3s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .letter {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: clamp(1.6rem, 3vw, 2.4rem) clamp(1.6rem, 3vw, 2.4rem);
+    box-shadow: var(--shadow-soft);
+  }
+  .letter p {
+    font-size: 1rem; color: var(--ink); line-height: 1.65;
+    margin: 0 0 0.9em;
+  }
+  .letter p:last-child { margin-bottom: 0; }
+  .letter p.first::first-letter {
+    font-family: var(--serif); font-style: italic;
+    font-size: 2.4em; float: left;
+    line-height: 0.85; padding: 0.05em 0.12em 0 0;
+    color: var(--sail);
+  }
+  .letter .sign {
+    font-family: var(--serif); font-style: italic;
+    font-size: 1.05rem; color: var(--sail);
+    margin-top: 0.6rem;
+  }
+
+  /* ---------- ROUTES ---------- */
+  .routes-wrap {
+    position: relative; z-index: 2;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 clamp(1.2rem, 5vw, 3rem) clamp(2rem, 4vw, 3rem);
+  }
+  .routes-head {
+    text-align: center; max-width: 620px; margin: 0 auto clamp(2rem, 4vw, 3rem);
+  }
+  .routes-head h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  }
+  .routes-head h2 .swash { font-style: italic; font-weight: 400; color: var(--sail); }
+  .routes-head .lede {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-soft); font-size: 1.02rem;
+    margin: 0.8rem 0 0; line-height: 1.55;
+  }
+
+  .routes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(1.2rem, 2.5vw, 1.8rem);
+    align-items: stretch;
+  }
+
+  .route {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: clamp(1.6rem, 3vw, 2rem) clamp(1.6rem, 3vw, 2rem) clamp(1.4rem, 3vw, 1.8rem);
+    box-shadow: var(--shadow-soft);
+    transition: transform 380ms cubic-bezier(.2,.7,.2,1),
+                box-shadow 380ms cubic-bezier(.2,.7,.2,1),
+                border-color 240ms ease;
+    opacity: 0; transform: translateY(20px);
+  }
+  .route:hover {
+    transform: translateY(-3px); box-shadow: var(--shadow-lift);
+    border-color: var(--accent);
+  }
+  .route[data-r="essentials"] { --accent: var(--essentials); --accent-soft: var(--essentials-soft); animation: rise 900ms 0.45s cubic-bezier(.2,.7,.2,1) forwards; }
+  .route[data-r="connected"]  { --accent: var(--connected);  --accent-soft: var(--connected-soft);  animation: rise 900ms 0.6s  cubic-bezier(.2,.7,.2,1) forwards; }
+  .route[data-r="bespoke"]    { --accent: var(--bespoke);    --accent-soft: var(--bespoke-soft);    animation: rise 900ms 0.75s cubic-bezier(.2,.7,.2,1) forwards; }
+
+  .route-tag {
+    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    font-family: var(--sans); font-size: 0.65rem; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    background: var(--accent); color: var(--paper);
+    padding: 0.4em 0.9em; border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .route-head {
+    text-align: center;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px dashed var(--line);
+    margin-bottom: 1.2rem;
+  }
+  .route-num {
+    font-family: var(--serif); font-style: italic;
+    color: var(--accent); font-size: 0.95rem;
+    margin-bottom: 0.5rem; opacity: 0.85;
+  }
+  .route h3 {
+    font-size: clamp(1.5rem, 2.4vw, 1.85rem);
+    margin-bottom: 0.5rem;
+  }
+  .route h3 .swash { font-style: italic; font-weight: 400; color: var(--accent); }
+
+  .route .promise {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-soft); font-size: 0.95rem;
+    line-height: 1.5; margin: 0.5rem auto 1rem;
+    max-width: 30ch;
+  }
+
+  .price {
+    font-family: var(--serif); font-weight: 500;
+    font-size: 2.2rem; color: var(--ink);
+    line-height: 1; letter-spacing: -0.02em;
+  }
+  .price .gbp { font-size: 1.4rem; opacity: 0.7; vertical-align: 0.18em; margin-right: 0.05em; }
+
+  .route-list {
+    list-style: none; padding: 0; margin: 0 0 1.4rem;
+    display: flex; flex-direction: column; gap: 0.55rem;
+    flex: 1;
+  }
+  .route-list li {
+    font-size: 0.92rem; color: var(--ink); line-height: 1.5;
+    padding-left: 1.4rem; position: relative;
+  }
+  .route-list li::before {
+    content: ''; position: absolute;
+    left: 0; top: 0.55em;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    border: 1.5px solid var(--accent);
+  }
+  .route-list li strong {
+    color: var(--ink); font-weight: 600;
+  }
+  .route-list li.plus {
+    padding-left: 1.4rem;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-family: var(--serif);
+    font-size: 0.92rem;
+    border-top: 1px dashed var(--line);
+    padding-top: 0.7rem;
+    margin-top: 0.3rem;
+  }
+  .route-list li.plus::before {
+    content: '+'; background: none; border: none;
+    color: var(--accent); font-style: normal;
+    font-weight: 600; font-family: var(--sans);
+    font-size: 0.95rem; top: 0.45em;
+    width: auto; height: auto;
+  }
+
+  .route-foot {
+    margin-top: auto; padding-top: 1rem;
+    border-top: 1px dashed var(--line);
+  }
+  .route-fit {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-faint); font-size: 0.85rem;
+    margin: 0 0 0.9rem; line-height: 1.45;
+  }
+  .route-fit strong { color: var(--ink-soft); font-style: normal; font-weight: 500; }
+
+  .demo-link {
+    display: inline-flex; align-items: center; gap: 0.5em;
+    text-decoration: none; color: var(--accent);
+    font-size: 0.85rem; font-weight: 500; letter-spacing: 0.04em;
+    padding: 0.6em 1em;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: transparent;
+    transition: background 200ms ease, color 200ms ease;
+  }
+  .demo-link:hover {
+    background: var(--accent); color: var(--paper);
+  }
+  .demo-link .arr { transition: transform 280ms cubic-bezier(.2,.7,.2,1); }
+  .demo-link:hover .arr { transform: translateX(3px); }
+
+  /* ---------- WHATS NEXT / FOOTER ---------- */
+  .next-wrap {
+    position: relative; z-index: 2;
+    max-width: 720px; margin: 0 auto;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.2rem, 5vw, 3rem) clamp(2rem, 4vw, 3rem);
+    text-align: center;
+  }
+  .next {
+    background: var(--sand-warm);
+    border: 1px dashed var(--line);
+    border-radius: var(--r-md);
+    padding: clamp(1.4rem, 2.5vw, 1.8rem);
+  }
+  .next h4 {
+    font-family: var(--sans); font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 0.6rem;
+  }
+  .next p {
+    font-family: var(--serif); font-style: italic;
+    font-size: 1rem; color: var(--ink); line-height: 1.5;
+    margin: 0;
+  }
+
+  .cta-wrap {
+    position: relative; z-index: 2;
+    max-width: 660px; margin: 0 auto;
+    padding: 0 clamp(1.2rem, 5vw, 3rem) clamp(3rem, 6vw, 5rem);
+    text-align: center;
+  }
+  .cta-wrap h3 {
+    font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+    margin-bottom: 0.6rem;
+  }
+  .cta-wrap h3 .swash { font-style: italic; font-weight: 400; color: var(--sail); }
+  .cta-wrap p {
+    font-family: var(--serif); font-style: italic;
+    font-size: 1.05rem; color: var(--ink-soft);
+    line-height: 1.55; max-width: 44ch; margin: 0 auto 1.4rem;
+  }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 0.5em;
+    text-decoration: none; color: var(--paper);
+    background: var(--ink); border: 1px solid var(--ink);
+    padding: 0.85em 1.6em; border-radius: 999px;
+    font-size: 0.9rem; font-weight: 500; letter-spacing: 0.04em;
+    transition: transform 200ms ease, background 200ms ease;
+  }
+  .cta-btn:hover { transform: translateY(-1px); background: var(--sail); border-color: var(--sail); }
+
+  footer {
+    position: relative; z-index: 2; margin-top: auto;
+    padding: clamp(1.5rem, 3vw, 2.4rem) 1.5rem clamp(2rem, 4vw, 3rem);
+    text-align: center; color: var(--ink-faint);
+    border-top: 1px solid var(--line);
+  }
+  footer .mark {
+    display: block; font-family: var(--serif); font-style: italic;
+    font-size: 1.6rem; color: var(--ink-faint);
+    margin-bottom: 0.6rem; opacity: 0.7;
+  }
+  footer p { font-size: 0.8rem; margin: 0; color: var(--ink-faint); line-height: 1.6; }
+
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .hero, .letter-wrap, .route { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="brand-bar">
+  <img src="htso-logo.png" alt="Harness the Spark">
+  <span class="brand-tag">coaching tools for the people you work with</span>
+</div>
+
+<header class="hero">
+  <div class="kicker">a small proposal</div>
+  <h1>Three <span class="swash">routes</span></h1>
+  <p class="for">for Ali · May 2026</p>
+</header>
+
+<section class="letter-wrap">
+  <div class="letter">
+    <p class="first">Hiya Ali — thank you again for our chat. Here are three routes I've shaped for you, all sitting under £500 and all standalone (a link, no app, no login). Each one starts from the same place: your existing frames — Window of Tolerance, Polyvagal Ladder, Shifting States, Conditions to Thrive — turned into something your clients can quietly use between sessions.</p>
+    <p>I've built early sketches of each tool so you can click through and feel them in your hands before deciding. They use placeholder language and colours — your final tools would be in your voice and your branding throughout.</p>
+    <p>Take a wander, see what fits. There's no rush, and no wrong door.</p>
+    <p class="sign">— Lisa</p>
+  </div>
+</section>
+
+<section class="routes-wrap">
+  <div class="routes-head">
+    <h2>The three <span class="swash">routes</span></h2>
+    <p class="lede">From a clean essential set, to a connected hub, to something built specifically for the people you work with.</p>
+  </div>
+
+  <div class="routes">
+
+    <!-- ESSENTIALS -->
+    <article class="route" data-r="essentials">
+      <div class="route-head">
+        <div class="route-num">i.</div>
+        <h3>The <span class="swash">Essentials</span></h3>
+        <p class="promise">Three of your core frames, digitised and branded — ready to send to a client today.</p>
+        <div class="price"><span class="gbp">£</span>197</div>
+      </div>
+
+      <ul class="route-list">
+        <li><strong>3 standalone HTML tools</strong>, each its own link</li>
+        <li><strong>Your Window</strong> — Window of Tolerance tracker (Polyvagal Ladder nested inside)</li>
+        <li><strong>Shifting States</strong> — strategy library for rough water and stillness</li>
+        <li><strong>Conditions to Thrive</strong> — three circles + day-in-life audit</li>
+        <li>Your <strong>logo, colours, and fonts</strong> applied throughout</li>
+        <li>Light copy edits to match your voice</li>
+        <li>Saves to the client's device only — no login, no data uploaded</li>
+        <li>1 round of revisions, ready to send within ~2 weeks</li>
+      </ul>
+
+      <div class="route-foot">
+        <p class="route-fit"><strong>This is for you if</strong> you want to start sharing tools with clients quickly, with the lightest lift.</p>
+        <a class="demo-link" href="window.html" target="_blank" rel="noopener">Try a live sketch <span class="arr">→</span></a>
+      </div>
+    </article>
+
+    <!-- CONNECTED -->
+    <article class="route" data-r="connected">
+      <div class="route-tag">most chosen</div>
+      <div class="route-head">
+        <div class="route-num">ii.</div>
+        <h3>The <span class="swash">Connected Set</span></h3>
+        <p class="promise">Everything in The Essentials, plus a hub clients arrive at, and a deeper interactive layer.</p>
+        <div class="price"><span class="gbp">£</span>347</div>
+      </div>
+
+      <ul class="route-list">
+        <li><strong>4 tools + a hub landing page</strong> — clients open one URL and choose a door</li>
+        <li>Polyvagal Ladder broken out as <strong>its own standalone tool</strong></li>
+        <li><strong>Favourites</strong> in Shifting States — clients keep what works for them</li>
+        <li><strong>Saved moments log</strong> in Window — clients keep a private record on their own device, with one-tap "Send to your coach" that opens their email pre-filled with you in the address</li>
+        <li><strong>Small-read reflections</strong> in Conditions — gentle observations on the day</li>
+        <li><strong>2 rounds</strong> of revisions</li>
+        <li><strong>30-min discovery call</strong> to align tone, structure, and prompts</li>
+        <li class="plus">More room for your voice and your structure across every tool</li>
+      </ul>
+
+      <div class="route-foot">
+        <p class="route-fit"><strong>This is for you if</strong> you want clients to feel they're stepping into your practice — one space, one feeling, several doors.</p>
+        <a class="demo-link" href="index.html" target="_blank" rel="noopener">Try the live sketch <span class="arr">→</span></a>
+      </div>
+    </article>
+
+    <!-- BESPOKE -->
+    <article class="route" data-r="bespoke">
+      <div class="route-head">
+        <div class="route-num">iii.</div>
+        <h3>The <span class="swash">Bespoke Set</span></h3>
+        <p class="promise">Everything in The Connected Set, plus one tool built specifically for the clients you actually see.</p>
+        <div class="price"><span class="gbp">£</span>497</div>
+      </div>
+
+      <ul class="route-list">
+        <li><strong>5 tools + hub</strong></li>
+        <li>One <strong>bespoke tool designed with you</strong> — for your caseload (e.g. an AuDHD-specific check-in, a parenting reflection, a between-sessions companion)</li>
+        <li><strong>Cross-linking</strong> — a Shifting States strategy can hop to the matching circle in Conditions</li>
+        <li><strong>Printable client summary</strong> — a one-page "what I noticed this week" clients can bring to sessions</li>
+        <li><strong>3 rounds</strong> of revisions</li>
+        <li>Longer onboarding — review of your existing PDFs, voice-match pass</li>
+        <li class="plus">A costed sketch of future website integration, included — so you know the path ahead when you're ready</li>
+      </ul>
+
+      <div class="route-foot">
+        <p class="route-fit"><strong>This is for you if</strong> you want a tool no other coach has — one designed around the specific people you work with.</p>
+        <a class="demo-link" href="conditions.html" target="_blank" rel="noopener">Try a live sketch <span class="arr">→</span></a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="next-wrap">
+  <div class="next" style="margin-bottom: 1.2rem;">
+    <h4>What you'll see, and what you won't</h4>
+    <p>By design, you don't see what your clients write between sessions. Their notes save privately to their own device — nothing is uploaded, nothing is stored anywhere you (or I) could access. The "Send to your coach" button gives them a one-tap way to share a snapshot with you when <em class="swash">they</em> choose. So you respond to what they bring to session, not what they did at 11pm on a Tuesday — which keeps the boundary clean and the GDPR picture trivially simple.</p>
+  </div>
+  <div class="next">
+    <h4>Looking ahead</h4>
+    <p>Whichever route you choose now, these tools can later be folded into goodenoughmama.co.uk — as a member area, embedded modules, or a fuller client portal where you'd see your clients' patterns over time. That's a separate piece of work we'd scope when the time feels right.</p>
+  </div>
+</section>
+
+<section class="cta-wrap">
+  <h3>How to <span class="swash">choose</span></h3>
+  <p>Click into the live sketches, see how they feel, and reply to my email with the route that fits. I'll send a simple proposal so you know exactly what you're getting before you commit to anything.</p>
+  <a class="cta-btn" href="mailto:lisa@harnessthespark.com?subject=Re%3A%20Three%20routes%20for%20Ali">Reply to choose a route <span aria-hidden="true">→</span></a>
+</section>
+
+<footer>
+  <span class="mark">~</span>
+  <p>A small proposal from Lisa Gills · Harness the Spark<br>Made with care, for noticing.</p>
+</footer>
+
+</body>
+</html>

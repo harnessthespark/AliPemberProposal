@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F5F0E8">
+<title>Conditions to thrive — a slow reflection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --threat:       #C0392B;
+    --threat-soft:  #F4D9D2;
+    --threat-tint:  #FAE8E4;
+    --drive:        #B07A5A;
+    --drive-soft:   #ECDACA;
+    --drive-tint:   #F2E5D8;
+    --sooth:        #5C7B9C;
+    --sooth-soft:   #C9D3E5;
+    --sooth-tint:   #DCE3EE;
+    --green:        #4A7C59;
+    --green-light:  #D6EDDF;
+    --sail:         #2C5F6E;
+    --sand:         #F5F0E8;
+    --sand-warm:    #EFE7D6;
+    --sand-deep:    #E5DBC4;
+    --ink:          #2A2420;
+    --ink-soft:     #5C534A;
+    --ink-faint:    #8A7F73;
+    --paper:        #FBF7EF;
+    --line:         #D9CFB8;
+
+    --serif: 'Playfair Display', 'Iowan Old Style', Georgia, serif;
+    --sans:  'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+    --shadow-soft: 0 1px 2px rgba(42, 36, 32, 0.04), 0 8px 24px rgba(42, 36, 32, 0.06);
+    --shadow-lift: 0 2px 4px rgba(42, 36, 32, 0.06), 0 16px 40px rgba(42, 36, 32, 0.08);
+
+    --r-sm: 6px;
+    --r-md: 12px;
+    --r-lg: 20px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--sand);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1;
+    opacity: 0.35; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.14 0 0 0 0 0.13 0 0 0 0.07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; letter-spacing: -0.01em; color: var(--ink); margin: 0; line-height: 1.15; }
+  p { margin: 0 0 0.6em; color: var(--ink-soft); }
+  em.swash { font-family: var(--serif); font-style: italic; font-weight: 400; }
+
+  .kicker {
+    font-family: var(--sans); font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    margin: 0 0 1.4em; display: inline-flex; align-items: center; gap: 0.7em;
+  }
+  .kicker::before, .kicker::after {
+    content: ''; width: 28px; height: 1px;
+    background: var(--ink-faint); opacity: 0.6;
+  }
+
+  /* topbar */
+  .topbar {
+    position: relative; z-index: 3;
+    padding: 1.2rem clamp(1.2rem, 5vw, 3rem) 0;
+    max-width: 1200px; margin: 0 auto; width: 100%;
+  }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 0.5em;
+    text-decoration: none; color: var(--ink-faint);
+    font-size: 0.85rem; letter-spacing: 0.04em;
+    transition: color 200ms ease;
+  }
+  .back-link:hover { color: var(--ink-soft); }
+  .back-link .arr { transition: transform 280ms cubic-bezier(.2,.7,.2,1); }
+  .back-link:hover .arr { transform: translateX(-3px); }
+
+  /* hero */
+  .hero {
+    position: relative; z-index: 2;
+    padding: clamp(2rem, 5vw, 3.5rem) clamp(1.2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+    max-width: 760px; margin: 0 auto; text-align: center;
+    opacity: 0; transform: translateY(12px);
+    animation: rise 1s 0.1s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 500; line-height: 1.05; letter-spacing: -0.025em;
+  }
+  .hero h1 .swash { font-style: italic; font-weight: 400; color: var(--sail); }
+  .hero .tagline {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem); color: var(--ink-soft);
+    max-width: 44ch; margin: 1.2em auto 0; line-height: 1.55;
+  }
+
+  /* lettuce quote */
+  .quote-wrap {
+    position: relative; z-index: 2;
+    max-width: 720px; margin: 0 auto;
+    padding: 0 clamp(1.2rem, 5vw, 3rem) clamp(2rem, 4vw, 3rem);
+    opacity: 0; transform: translateY(16px);
+    animation: rise 1s 0.3s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .quote {
+    background: var(--paper); border-left: 3px solid var(--sail);
+    border-radius: var(--r-md);
+    padding: clamp(1.4rem, 3vw, 2rem) clamp(1.6rem, 3vw, 2.4rem);
+    box-shadow: var(--shadow-soft);
+  }
+  .quote p {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(1.05rem, 1.6vw, 1.18rem);
+    color: var(--ink); line-height: 1.55;
+    margin: 0 0 0.8em;
+  }
+  .quote p:last-of-type { margin-bottom: 1rem; }
+  .quote cite {
+    font-family: var(--sans); font-style: normal;
+    font-size: 0.78rem; color: var(--ink-faint);
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+
+  /* section */
+  .section {
+    position: relative; z-index: 2;
+    max-width: 1100px; margin: 0 auto;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.2rem, 5vw, 3rem);
+  }
+  .section-head {
+    text-align: center; margin-bottom: clamp(1.6rem, 3vw, 2.4rem);
+  }
+  .section-head h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  }
+  .section-head h2 .swash { font-style: italic; font-weight: 400; color: var(--sail); }
+  .section-head .lede {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-soft); font-size: 1.02rem;
+    margin: 0.8rem auto 0; max-width: 56ch;
+    line-height: 1.55;
+  }
+
+  /* ---------- three circles ---------- */
+  .circles-stage {
+    position: relative;
+    width: 100%; max-width: 640px;
+    aspect-ratio: 1 / 0.85;
+    margin: 0 auto;
+  }
+  .circle {
+    appearance: none; border: none; font: inherit; color: inherit;
+    position: absolute;
+    width: 47%; aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    text-align: center; padding: 1.4rem;
+    background: var(--c-soft);
+    border: 1px solid var(--c-mid, var(--line));
+    transition: transform 380ms cubic-bezier(.2,.7,.2,1),
+                box-shadow 380ms ease,
+                background 240ms ease;
+    box-shadow: var(--shadow-soft);
+  }
+  .circle:hover, .circle:focus-visible {
+    transform: scale(1.03);
+    box-shadow: var(--shadow-lift);
+    outline: none;
+    background: var(--c-tint);
+  }
+  .circle.active {
+    background: var(--c-tint);
+    border-color: var(--c-mid);
+    box-shadow: 0 0 0 4px var(--c-soft), var(--shadow-lift);
+  }
+  .circle-name {
+    font-family: var(--sans); font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--c-deep); margin-bottom: 0.4rem;
+  }
+  .circle-tag {
+    font-family: var(--serif); font-style: italic;
+    font-size: 0.95rem; color: var(--ink-soft);
+    line-height: 1.3;
+  }
+  .circle-glyph {
+    font-family: var(--serif); font-size: 1.4rem;
+    color: var(--c-deep); margin-bottom: 0.5rem; line-height: 1;
+  }
+
+  .circle[data-c="threat"] {
+    --c-soft: var(--threat-soft); --c-tint: var(--threat-tint); --c-mid: var(--threat); --c-deep: #8B2A1F;
+    top: 0; left: 5%;
+  }
+  .circle[data-c="drive"] {
+    --c-soft: var(--drive-soft); --c-tint: var(--drive-tint); --c-mid: var(--drive); --c-deep: #6E4A33;
+    top: 0; right: 5%;
+  }
+  .circle[data-c="sooth"] {
+    --c-soft: var(--sooth-soft); --c-tint: var(--sooth-tint); --c-mid: var(--sooth); --c-deep: #344B66;
+    bottom: 0; left: 27%;
+  }
+
+  .stress-axis {
+    position: absolute;
+    right: -8px; top: 5%; bottom: 25%;
+    display: flex; flex-direction: column;
+    justify-content: space-between; align-items: center;
+    pointer-events: none;
+  }
+  .stress-axis span {
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    font-family: var(--sans); font-size: 0.65rem; font-weight: 500;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--sand); padding: 0.4em 0.2em;
+  }
+
+  /* circle detail panel */
+  .circle-detail {
+    margin: 2.5rem auto 0;
+    max-width: 720px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: clamp(1.4rem, 3vw, 2rem) clamp(1.6rem, 3vw, 2.4rem);
+    box-shadow: var(--shadow-soft);
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 480ms ease, transform 480ms ease, border-color 240ms ease;
+    pointer-events: none; height: 0; padding-top: 0; padding-bottom: 0;
+    border-width: 0; overflow: hidden; margin-top: 0;
+  }
+  .circle-detail.visible {
+    opacity: 1; transform: translateY(0);
+    pointer-events: auto; height: auto;
+    padding-top: clamp(1.4rem, 3vw, 2rem); padding-bottom: clamp(1.4rem, 3vw, 2rem);
+    border-width: 1px; margin-top: 2.5rem;
+  }
+  .circle-detail .detail-eyebrow {
+    font-family: var(--sans); font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 0.6rem;
+  }
+  .circle-detail h3 {
+    font-size: clamp(1.5rem, 2.4vw, 1.95rem);
+    margin-bottom: 0.6rem;
+  }
+  .circle-detail h3 .swash { font-style: italic; font-weight: 400; }
+  .circle-detail .detail-body {
+    color: var(--ink-soft); margin-bottom: 1.2rem;
+    line-height: 1.6;
+  }
+  .detail-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem; margin-top: 1rem;
+  }
+  .detail-grid .col h4 {
+    font-family: var(--sans); font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 0.4rem;
+  }
+  .detail-grid .col p {
+    margin: 0; font-size: 0.95rem; line-height: 1.5;
+    color: var(--ink);
+  }
+
+  /* ---------- day in your life ---------- */
+  .day-card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: clamp(1.4rem, 3vw, 2rem) clamp(1.4rem, 3vw, 2.2rem);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .day-instr {
+    display: flex; gap: 1.2rem; align-items: flex-start;
+    padding: 0.8rem 1rem; background: var(--sand-warm);
+    border-radius: var(--r-md); margin-bottom: 1.4rem;
+  }
+  .day-instr .mark {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-faint); font-size: 1.4rem;
+    line-height: 1;
+  }
+  .day-instr p {
+    margin: 0; font-size: 0.92rem;
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink); line-height: 1.5;
+  }
+
+  .activities-list {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    margin-bottom: 1.2rem;
+  }
+  .activity-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 0.8rem; align-items: center;
+    padding: 0.6rem 0.8rem;
+    background: var(--sand);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+  .activity-row input[type="text"] {
+    font: inherit; border: none; background: transparent;
+    padding: 0.3em 0.4em; outline: none; color: var(--ink);
+    border-bottom: 1px solid transparent;
+    transition: border-color 180ms ease;
+  }
+  .activity-row input[type="text"]:focus { border-bottom-color: var(--ink-faint); }
+  .activity-row input[type="text"]::placeholder { color: var(--ink-faint); font-style: italic; }
+
+  .score {
+    display: inline-flex; gap: 3px; align-items: center;
+    background: var(--paper); padding: 0.3em 0.5em;
+    border-radius: 999px; border: 1px solid var(--line);
+  }
+  .score .score-label {
+    font-family: var(--sans); font-size: 0.62rem; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-faint); margin-right: 0.4em;
+  }
+  .score-dot {
+    appearance: none; border: none; padding: 0; cursor: pointer;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--sand-deep);
+    transition: background 180ms ease, transform 180ms ease;
+  }
+  .score-dot:hover { transform: scale(1.15); }
+  .score[data-kind="self"] .score-dot.on { background: var(--sooth); }
+  .score[data-kind="others"] .score-dot.on { background: var(--drive); }
+
+  .row-remove {
+    appearance: none; background: none; border: none;
+    color: var(--ink-faint); cursor: pointer;
+    font-size: 1.1rem; line-height: 1; padding: 4px 6px;
+    border-radius: 4px;
+    transition: color 180ms ease;
+  }
+  .row-remove:hover { color: var(--threat); }
+
+  .day-actions {
+    display: flex; gap: 0.6rem; flex-wrap: wrap;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--line);
+  }
+
+  .btn {
+    appearance: none; border: 1px solid var(--ink); background: var(--ink);
+    color: var(--paper); padding: 0.65em 1.1em;
+    border-radius: 999px; font: inherit; font-size: 0.85rem;
+    font-weight: 500; letter-spacing: 0.04em; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.5em;
+    transition: transform 180ms ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent; color: var(--ink-soft);
+    border-color: var(--line);
+  }
+  .btn-ghost:hover { color: var(--ink); border-color: var(--ink-faint); }
+
+  .day-summary {
+    margin-top: 1.4rem; padding: 1rem 1.2rem;
+    border-radius: var(--r-md);
+    background: var(--green-light);
+    border: 1px dashed var(--line);
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink); font-size: 0.95rem;
+    display: none;
+  }
+  .day-summary.visible { display: block; }
+  .day-summary strong { color: var(--green); font-style: normal; }
+
+  /* ---------- reflection ---------- */
+  .reflect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .reflect-card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 1.1rem 1.2rem 1rem;
+    box-shadow: var(--shadow-soft);
+    transition: transform 240ms ease, border-color 240ms ease;
+  }
+  .reflect-card:hover { border-color: var(--ink-faint); transform: translateY(-1px); }
+  .reflect-card .num {
+    font-family: var(--serif); font-style: italic;
+    color: var(--sail); font-size: 0.95rem;
+    margin-bottom: 0.4rem; opacity: 0.85;
+  }
+  .reflect-card p {
+    margin: 0; font-size: 0.95rem; color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* ---------- notes ---------- */
+  .notes-card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: clamp(1.4rem, 3vw, 2rem);
+    box-shadow: var(--shadow-soft);
+  }
+  .notes-card label {
+    display: block; font-family: var(--sans);
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 0.6rem;
+  }
+  .notes-card textarea {
+    width: 100%; min-height: 160px;
+    border: 1px solid var(--line); border-radius: var(--r-md);
+    background: var(--sand); padding: 0.9rem 1rem;
+    font: inherit; color: var(--ink); resize: vertical;
+    outline: none; line-height: 1.55;
+    transition: border-color 200ms ease, background 200ms ease;
+  }
+  .notes-card textarea:focus { border-color: var(--ink-faint); background: var(--paper); }
+  .notes-card textarea::placeholder { color: var(--ink-faint); font-style: italic; }
+  .notes-flash {
+    display: inline-block; margin-left: 0.6rem;
+    font-family: var(--serif); font-style: italic;
+    color: var(--green); font-size: 0.85rem;
+    opacity: 0; transition: opacity 400ms ease;
+  }
+  .notes-flash.visible { opacity: 1; }
+
+  /* ---------- footer ---------- */
+  footer {
+    position: relative; z-index: 2; margin-top: auto;
+    padding: clamp(1.5rem, 3vw, 2.4rem) 1.5rem clamp(2rem, 4vw, 3rem);
+    text-align: center; color: var(--ink-faint);
+    border-top: 1px solid var(--line);
+  }
+  footer .mark {
+    display: block; font-family: var(--serif); font-style: italic;
+    font-size: 1.6rem; color: var(--ink-faint);
+    margin-bottom: 0.6rem; opacity: 0.7;
+  }
+  footer p { font-size: 0.85rem; margin: 0; color: var(--ink-faint); line-height: 1.6; }
+
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 640px) {
+    .activity-row {
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+      row-gap: 0.5rem;
+    }
+    .activity-row input[type="text"] { grid-column: 1 / 3; }
+    .activity-row .score:nth-of-type(1) { grid-column: 1; }
+    .activity-row .score:nth-of-type(2) { grid-column: 2; }
+    .activity-row .row-remove { grid-column: 2; grid-row: 1; justify-self: end; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .hero, .quote-wrap, .circle-detail { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back-link" href="index.html"><span class="arr">←</span> back to the doors</a>
+</div>
+
+<header class="hero">
+  <div class="kicker">a slow reflection</div>
+  <h1>Conditions to <span class="swash">thrive</span></h1>
+  <p class="tagline">Three places your motivation comes from, and a quiet look at what your day grows from. No judgement, no blame — just noticing.</p>
+</header>
+
+<section class="quote-wrap" aria-label="Opening quote">
+  <blockquote class="quote">
+    <p>"When you plant lettuce, if it does not grow well, you don't blame the lettuce. You look for reasons it is not doing well. It may need fertiliser, or more water, or less sun.</p>
+    <p>Blaming has no positive effect at all, nor does trying to persuade using reason and argument. That is my experience.</p>
+    <p>No blame, no reasoning, no argument, just understanding. If you understand, and you show that you understand, you can love, and the situation will change."</p>
+    <cite>— Thich Nhat Hanh</cite>
+  </blockquote>
+</section>
+
+<!-- ============ THREE CIRCLES ============ -->
+<section class="section" aria-label="Three circles">
+  <div class="section-head">
+    <h2>Three <span class="swash">circles</span></h2>
+    <p class="lede">Three motivation systems. Each one is here for a reason. A healthy life isn't one without bracing or reaching — it's one where the three are in some kind of balance. Tap a circle to step into it.</p>
+  </div>
+
+  <div class="circles-stage" role="group" aria-label="Three circles diagram">
+    <button class="circle" data-c="threat" type="button" aria-pressed="false">
+      <span class="circle-glyph">!</span>
+      <span class="circle-name">Bracing</span>
+      <span class="circle-tag">seeking protection<br>and safety</span>
+    </button>
+    <button class="circle" data-c="drive" type="button" aria-pressed="false">
+      <span class="circle-glyph">↗</span>
+      <span class="circle-name">Reaching</span>
+      <span class="circle-tag">seeking resources<br>and reward</span>
+    </button>
+    <button class="circle" data-c="sooth" type="button" aria-pressed="false">
+      <span class="circle-glyph">~</span>
+      <span class="circle-name">Settling</span>
+      <span class="circle-tag">seeking connection<br>and safeness</span>
+    </button>
+
+    <div class="stress-axis" aria-hidden="true">
+      <span>Stress</span>
+      <span>Rest</span>
+    </div>
+  </div>
+
+  <div class="circle-detail" id="circleDetail">
+    <div class="detail-eyebrow" id="detailEyebrow"></div>
+    <h3 id="detailTitle"></h3>
+    <p class="detail-body" id="detailBody"></p>
+    <div class="detail-grid">
+      <div class="col">
+        <h4>What it feels like</h4>
+        <p id="detailFeels"></p>
+      </div>
+      <div class="col">
+        <h4>What the body does</h4>
+        <p id="detailBody2"></p>
+      </div>
+      <div class="col">
+        <h4>What it's good for</h4>
+        <p id="detailGood"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ A DAY IN YOUR LIFE ============ -->
+<section class="section" aria-label="A day in your life">
+  <div class="section-head">
+    <h2>A day in your <span class="swash">life</span></h2>
+    <p class="lede">List the things you actually did today, or a typical day. For each, mark how much was care for you, and how much was care for someone else. The columns can both be high — or both low. Both are useful to notice.</p>
+  </div>
+
+  <div class="day-card">
+    <div class="day-instr">
+      <span class="mark">~</span>
+      <p>One row at a time. The dots are 1 to 5 — tap to mark, tap again to unmark. Don't think too hard.</p>
+    </div>
+
+    <div class="activities-list" id="activitiesList"></div>
+
+    <div class="day-actions">
+      <button class="btn" type="button" id="addRowBtn">Add an activity <span aria-hidden="true">+</span></button>
+      <button class="btn btn-ghost" type="button" id="reflectBtn">Show me a small read</button>
+      <button class="btn btn-ghost" type="button" id="clearDayBtn">Clear the day</button>
+    </div>
+
+    <div class="day-summary" id="daySummary" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ REFLECTION QUESTIONS ============ -->
+<section class="section" aria-label="Questions for reflection">
+  <div class="section-head">
+    <h2>Questions to <span class="swash">sit with</span></h2>
+    <p class="lede">Open the day out and notice what comes up. None of these need answering now — they're for slow reading.</p>
+  </div>
+
+  <div class="reflect-grid">
+    <div class="reflect-card"><div class="num">i.</div><p>Are the scores evenly divided across the two columns?</p></div>
+    <div class="reflect-card"><div class="num">ii.</div><p>On a particular activity, do self-care and care-for-others match — or differ?</p></div>
+    <div class="reflect-card"><div class="num">iii.</div><p>How do you feel about the balance between the two? Contented, neutral, or uneasy?</p></div>
+    <div class="reflect-card"><div class="num">iv.</div><p>How do high or low-scoring activities relate to your energy? Tiring, exciting, refreshing?</p></div>
+    <div class="reflect-card"><div class="num">v.</div><p>Can you notice bracing, reaching, or settling when you do certain things?</p></div>
+    <div class="reflect-card"><div class="num">vi.</div><p>Are there particular stress reactions or inner patterns that keep showing up?</p></div>
+    <div class="reflect-card"><div class="num">vii.</div><p>Is an inner critic, or an inner helper, in the room with you?</p></div>
+    <div class="reflect-card"><div class="num">viii.</div><p>What about deeper motivations — me-first, you-first, or we-together? In line with your values?</p></div>
+    <div class="reflect-card"><div class="num">ix.</div><p>If you can't change <em class="swash">what</em> you do, can you look at <em class="swash">how</em> you do it? What intentions might help?</p></div>
+  </div>
+</section>
+
+<!-- ============ NOTES ============ -->
+<section class="section" aria-label="Notes">
+  <div class="section-head">
+    <h2>Anything <span class="swash">noticed</span></h2>
+    <p class="lede">A small open page. Write a word, a sentence, or close the laptop and come back another day.</p>
+  </div>
+
+  <div class="notes-card">
+    <label for="notesArea">Notes <span class="notes-flash" id="notesFlash">saved.</span></label>
+    <textarea id="notesArea" placeholder="A line of weather, a name, a thing that surprised you…"></textarea>
+  </div>
+</section>
+
+<footer>
+  <span class="mark">~</span>
+  <p>Made with care, for noticing.<br>Everything saves to your device only — nothing is uploaded.</p>
+</footer>
+
+<script>
+  // ---------- circle detail copy ----------
+  const CIRCLES = {
+    threat: {
+      eyebrow: 'Bracing · the threat system',
+      title: 'When the system is <em class="swash">watching for danger</em>',
+      body:  "The bracing system protects you. It scans for what could go wrong and prepares you to act — to fight, to flee, or to freeze. It's old, it's loud, and it's not the enemy. But too long here, and the body wears out.",
+      feels: 'Anger, anxiety, aversion. A sense of needing to act, to escape, or to disappear.',
+      body2: 'Breathing speeds up. Muscles tense. Digestion slows. The system runs hot.',
+      good:  'Real danger. Quick decisions. Protecting what matters when it matters fast.',
+    },
+    drive: {
+      eyebrow: 'Reaching · the drive system',
+      title: 'When the system is <em class="swash">going for it</em>',
+      body:  "The reaching system goes after things — goals, rewards, status, food, finishing the list. It's energising and it gets a lot done. But it can also become the only place we live, and that's tiring too.",
+      feels: 'Excitement, desire, satisfaction. A sense of momentum, of striving, of next.',
+      body2: 'Heart rate up, focus narrow, attention forward. The system runs warm and fast.',
+      good:  'Building things. Pursuing what matters. Engaging with the world. Feeling alive.',
+    },
+    sooth: {
+      eyebrow: 'Settling · the soothing system',
+      title: 'When the system is <em class="swash">resting in care</em>',
+      body:  "The settling system isn't about doing nothing — it's about feeling safe enough to rest. It's where contentment lives, where care for self and others can be felt, where the body finally puts down the weight.",
+      feels: 'Contentment, ease, calm. A sense of being held, of having enough, of belonging.',
+      body2: 'Breathing slows. Heart rate steadies. Digestion returns. The system runs cool.',
+      good:  'Repair. Connection. Being kind. Sleeping well. Coming back to yourself.',
+    },
+  };
+
+  const STORE_KEY = 'ali_conditions_v1';
+  let state = JSON.parse(localStorage.getItem(STORE_KEY) || '{"activities":[],"notes":"","activeCircle":null}');
+  function save() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+  // ---------- circles ----------
+  const detail = {
+    panel: document.getElementById('circleDetail'),
+    eyebrow: document.getElementById('detailEyebrow'),
+    title: document.getElementById('detailTitle'),
+    body: document.getElementById('detailBody'),
+    feels: document.getElementById('detailFeels'),
+    body2: document.getElementById('detailBody2'),
+    good: document.getElementById('detailGood'),
+  };
+
+  function showCircle(c) {
+    state.activeCircle = c;
+    save();
+    document.querySelectorAll('.circle').forEach(el => {
+      const active = el.dataset.c === c;
+      el.classList.toggle('active', active);
+      el.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    const data = CIRCLES[c];
+    detail.eyebrow.textContent = data.eyebrow;
+    detail.title.innerHTML = data.title;
+    detail.body.textContent = data.body;
+    detail.feels.textContent = data.feels;
+    detail.body2.textContent = data.body2;
+    detail.good.textContent = data.good;
+    detail.panel.classList.add('visible');
+  }
+
+  document.querySelectorAll('.circle').forEach(el => {
+    el.addEventListener('click', () => showCircle(el.dataset.c));
+  });
+
+  // ---------- activities ----------
+  const activitiesList = document.getElementById('activitiesList');
+
+  function renderActivities() {
+    activitiesList.innerHTML = '';
+    state.activities.forEach((row, idx) => {
+      const el = document.createElement('div');
+      el.className = 'activity-row';
+      el.innerHTML = `
+        <input type="text" placeholder="something you did…" value="${row.text.replace(/"/g, '&quot;')}" data-idx="${idx}" data-key="text">
+        ${scoreHtml('self', row.self, idx)}
+        ${scoreHtml('others', row.others, idx)}
+        <button class="row-remove" type="button" aria-label="Remove this activity" data-idx="${idx}">×</button>
+      `;
+      activitiesList.appendChild(el);
+    });
+
+    // wire inputs
+    activitiesList.querySelectorAll('input[type="text"]').forEach(input => {
+      input.addEventListener('input', e => {
+        state.activities[+e.target.dataset.idx].text = e.target.value;
+        save();
+      });
+    });
+    // wire dots
+    activitiesList.querySelectorAll('.score-dot').forEach(dot => {
+      dot.addEventListener('click', e => {
+        const idx = +e.target.dataset.idx;
+        const kind = e.target.dataset.kind;
+        const v = +e.target.dataset.v;
+        const cur = state.activities[idx][kind];
+        state.activities[idx][kind] = (cur === v) ? 0 : v;
+        save();
+        renderActivities();
+      });
+    });
+    // wire removes
+    activitiesList.querySelectorAll('.row-remove').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const idx = +e.target.dataset.idx;
+        state.activities.splice(idx, 1);
+        save();
+        renderActivities();
+      });
+    });
+  }
+
+  function scoreHtml(kind, value, idx) {
+    let dots = '';
+    for (let v = 1; v <= 5; v++) {
+      dots += `<button class="score-dot${v <= value ? ' on' : ''}" type="button" aria-label="${kind} ${v} of 5" data-idx="${idx}" data-kind="${kind}" data-v="${v}"></button>`;
+    }
+    return `<div class="score" data-kind="${kind}"><span class="score-label">${kind === 'self' ? 'self' : 'others'}</span>${dots}</div>`;
+  }
+
+  function addRow() {
+    state.activities.push({ text: '', self: 0, others: 0 });
+    save();
+    renderActivities();
+    const lastInput = activitiesList.querySelector('.activity-row:last-child input[type="text"]');
+    if (lastInput) lastInput.focus();
+  }
+
+  document.getElementById('addRowBtn').addEventListener('click', addRow);
+
+  document.getElementById('clearDayBtn').addEventListener('click', () => {
+    if (state.activities.length && !confirm('Clear all activities? This can\'t be undone.')) return;
+    state.activities = [];
+    save();
+    renderActivities();
+    document.getElementById('daySummary').classList.remove('visible');
+  });
+
+  // ---------- a small read ----------
+  document.getElementById('reflectBtn').addEventListener('click', () => {
+    const rows = state.activities.filter(r => r.text.trim() && (r.self || r.others));
+    const summary = document.getElementById('daySummary');
+    if (!rows.length) {
+      summary.innerHTML = 'Add a row or two with some scores, then come back.';
+      summary.classList.add('visible');
+      return;
+    }
+    const totalSelf = rows.reduce((a, r) => a + r.self, 0);
+    const totalOthers = rows.reduce((a, r) => a + r.others, 0);
+    const avgSelf = (totalSelf / rows.length).toFixed(1);
+    const avgOthers = (totalOthers / rows.length).toFixed(1);
+    const diff = totalOthers - totalSelf;
+
+    let read = '';
+    if (Math.abs(diff) <= 2) {
+      read = `Across ${rows.length} ${rows.length === 1 ? 'activity' : 'activities'}, the two columns are sitting roughly together — care for yourself averaging <strong>${avgSelf}</strong>, care for others <strong>${avgOthers}</strong>. A felt balance, on this read.`;
+    } else if (diff > 2) {
+      read = `Across ${rows.length} ${rows.length === 1 ? 'activity' : 'activities'}, the day leans toward others — <strong>${avgOthers}</strong> on care for others, <strong>${avgSelf}</strong> on care for yourself. Something to notice, gently.`;
+    } else {
+      read = `Across ${rows.length} ${rows.length === 1 ? 'activity' : 'activities'}, the day leans toward yourself — <strong>${avgSelf}</strong> on care for yourself, <strong>${avgOthers}</strong> on care for others. That might be exactly right today.`;
+    }
+    summary.innerHTML = read;
+    summary.classList.add('visible');
+  });
+
+  // ---------- notes ----------
+  const notesArea = document.getElementById('notesArea');
+  const notesFlash = document.getElementById('notesFlash');
+  notesArea.value = state.notes || '';
+  let notesTimer;
+  notesArea.addEventListener('input', () => {
+    state.notes = notesArea.value;
+    save();
+    clearTimeout(notesTimer);
+    notesFlash.classList.add('visible');
+    notesTimer = setTimeout(() => notesFlash.classList.remove('visible'), 1200);
+  });
+
+  // ---------- init ----------
+  if (!state.activities.length) {
+    // start with a few empty rows so the section doesn't feel empty
+    state.activities = [
+      { text: '', self: 0, others: 0 },
+      { text: '', self: 0, others: 0 },
+      { text: '', self: 0, others: 0 },
+    ];
+    save();
+  }
+  renderActivities();
+  if (state.activeCircle) showCircle(state.activeCircle);
+</script>
+</body>
+</html>

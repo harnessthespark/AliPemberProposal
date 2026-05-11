@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F5F0E8">
+<title>A quiet place to notice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --hyper:        #C0392B;
+    --hyper-soft:   #FAE8E4;
+    --green:        #4A7C59;
+    --green-light:  #D6EDDF;
+    --sail:         #2C5F6E;
+    --hypo:         #2C4770;
+    --hypo-soft:    #E4EAF4;
+    --thrive:       #8C6B57;
+    --thrive-soft:  #EDE2D5;
+    --sand:         #F5F0E8;
+    --sand-warm:    #EFE7D6;
+    --sand-deep:    #E5DBC4;
+    --ink:          #2A2420;
+    --ink-soft:     #5C534A;
+    --ink-faint:    #8A7F73;
+    --paper:        #FBF7EF;
+    --line:         #D9CFB8;
+
+    --serif: 'Playfair Display', 'Iowan Old Style', Georgia, serif;
+    --sans:  'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+    --shadow-soft: 0 1px 2px rgba(42, 36, 32, 0.04), 0 8px 24px rgba(42, 36, 32, 0.06);
+    --shadow-lift: 0 2px 4px rgba(42, 36, 32, 0.06), 0 16px 40px rgba(42, 36, 32, 0.08);
+
+    --r-sm: 6px;
+    --r-md: 12px;
+    --r-lg: 20px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--sand);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.14 0 0 0 0 0.13 0 0 0 0.07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  p { margin: 0 0 0.6em; color: var(--ink-soft); }
+
+  em.swash { font-family: var(--serif); font-style: italic; font-weight: 400; }
+
+  .kicker {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 1.4em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+  }
+  .kicker::before, .kicker::after {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--ink-faint);
+    opacity: 0.6;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    padding: clamp(3rem, 8vw, 5.5rem) clamp(1.2rem, 5vw, 3rem) clamp(2rem, 4vw, 3rem);
+    max-width: 880px;
+    margin: 0 auto;
+    text-align: center;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: rise 1.1s 0.1s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+  .hero h1 .swash {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--sail);
+  }
+
+  .hero .tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+    color: var(--ink-soft);
+    max-width: 42ch;
+    margin: 1.2em auto 0;
+    line-height: 1.55;
+  }
+
+  /* ---------- DOORS ---------- */
+  .doors {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.2rem, 5vw, 3rem) clamp(3rem, 6vw, 5rem);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: clamp(1.2rem, 2.5vw, 1.8rem);
+  }
+
+  .door {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: clamp(1.6rem, 3vw, 2.2rem);
+    box-shadow: var(--shadow-soft);
+    transition: transform 480ms cubic-bezier(.2,.7,.2,1),
+                box-shadow 480ms cubic-bezier(.2,.7,.2,1),
+                border-color 280ms ease;
+    opacity: 0;
+    transform: translateY(20px);
+    overflow: hidden;
+  }
+  .door::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--r-lg);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 480ms ease;
+    background: linear-gradient(180deg, transparent 60%, var(--accent-soft, var(--sand-warm)) 100%);
+  }
+  .door:hover, .door:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: var(--accent, var(--ink-faint));
+    outline: none;
+  }
+  .door:hover::before, .door:focus-visible::before {
+    opacity: 0.55;
+  }
+
+  .door[data-door="window"]    { --accent: var(--sail);   --accent-soft: var(--green-light); animation: rise 900ms 0.45s cubic-bezier(.2,.7,.2,1) forwards; }
+  .door[data-door="shifting"]  { --accent: var(--hyper);  --accent-soft: var(--hyper-soft);  animation: rise 900ms 0.6s  cubic-bezier(.2,.7,.2,1) forwards; }
+  .door[data-door="thrive"]    { --accent: var(--thrive); --accent-soft: var(--thrive-soft); animation: rise 900ms 0.75s cubic-bezier(.2,.7,.2,1) forwards; }
+
+  .door-vis {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--r-md);
+    background: var(--sand);
+    border: 1px solid var(--line);
+    margin-bottom: 1.4rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .door-vis svg { width: 100%; height: 100%; display: block; }
+
+  .door-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+    opacity: 0.85;
+  }
+
+  .door h2 {
+    font-size: clamp(1.45rem, 2.2vw, 1.8rem);
+    margin-bottom: 0.3rem;
+    line-height: 1.15;
+  }
+  .door h2 .swash { color: var(--accent); }
+
+  .door .tag {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.9rem;
+  }
+
+  .door p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.4rem;
+  }
+
+  .door-foot {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.6rem;
+    border-top: 1px dashed var(--line);
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .door-foot .arr {
+    transition: transform 320ms cubic-bezier(.2,.7,.2,1);
+    display: inline-block;
+  }
+  .door:hover .door-foot .arr,
+  .door:focus-visible .door-foot .arr { transform: translateX(4px); }
+
+  .door-meta {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    padding: clamp(1.5rem, 3vw, 2.4rem) 1.5rem clamp(2rem, 4vw, 3rem);
+    text-align: center;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--line);
+  }
+  footer .mark {
+    display: block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.6rem;
+    color: var(--ink-faint);
+    margin-bottom: 0.6rem;
+    opacity: 0.7;
+  }
+  footer p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: var(--ink-faint);
+    line-height: 1.6;
+  }
+
+  @keyframes rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .hero, .door { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="kicker">A quiet place</div>
+  <h1>Three small <span class="swash">doors</span></h1>
+  <p class="tagline">A few different ways to notice where you are, what helps, and what you're giving yourself room for. Step through whichever fits today — or none at all.</p>
+</header>
+
+<nav class="doors" aria-label="Three sketches">
+
+  <a class="door" data-door="window" href="window.html">
+    <div class="door-vis" aria-hidden="true">
+      <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="skyW" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#EFE7D6"/>
+            <stop offset="1" stop-color="#F5F0E8"/>
+          </linearGradient>
+          <linearGradient id="seaW" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#C9DCE3"/>
+            <stop offset="1" stop-color="#A6C2CD"/>
+          </linearGradient>
+        </defs>
+        <rect width="320" height="180" fill="url(#skyW)"/>
+        <path d="M0 110 Q40 100 80 108 T160 110 T240 108 T320 112 L320 180 L0 180 Z" fill="url(#seaW)" opacity="0.85"/>
+        <path d="M0 122 Q40 116 80 120 T160 122 T240 119 T320 123" stroke="#2C5F6E" stroke-width="0.8" fill="none" opacity="0.35"/>
+        <path d="M0 140 Q40 134 80 138 T160 140 T240 137 T320 141" stroke="#2C5F6E" stroke-width="0.6" fill="none" opacity="0.25"/>
+        <g transform="translate(160 96)">
+          <path d="M-12 8 Q0 -2 12 8 L8 16 L-8 16 Z" fill="#2A2420" opacity="0.85"/>
+          <path d="M0 -22 L0 8" stroke="#2A2420" stroke-width="1.4" fill="none"/>
+          <path d="M1 -20 Q10 -10 4 6 Z" fill="#FBF7EF" stroke="#5C534A" stroke-width="0.6"/>
+        </g>
+      </svg>
+    </div>
+    <div class="door-num">i.</div>
+    <h2>Your <span class="swash">window</span></h2>
+    <div class="tag">window of tolerance · polyvagal ladder</div>
+    <p>A daily tracker. Drag a small boat along the water to show where you are. Add what you notice in body, thoughts, and behaviour. Keep moments in a quiet log over time.</p>
+    <div class="door-foot">
+      <span>Step through <span class="arr">→</span></span>
+      <span class="door-meta">a daily noticing</span>
+    </div>
+  </a>
+
+  <a class="door" data-door="shifting" href="shifting-states.html">
+    <div class="door-vis" aria-hidden="true">
+      <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="rough" cx="0.25" cy="0.45" r="0.55">
+            <stop offset="0" stop-color="#FAE8E4"/>
+            <stop offset="1" stop-color="#F5F0E8"/>
+          </radialGradient>
+          <radialGradient id="fog" cx="0.78" cy="0.55" r="0.48">
+            <stop offset="0" stop-color="#E4EAF4"/>
+            <stop offset="1" stop-color="#F5F0E8"/>
+          </radialGradient>
+        </defs>
+        <rect width="320" height="180" fill="#F5F0E8"/>
+        <circle cx="80" cy="80" r="68" fill="url(#rough)" opacity="0.9"/>
+        <circle cx="240" cy="100" r="62" fill="url(#fog)" opacity="0.85"/>
+        <!-- rough water tick lines -->
+        <g stroke="#C0392B" stroke-width="1" fill="none" opacity="0.55" stroke-linecap="round">
+          <path d="M55 70 Q65 62 75 70 T95 70"/>
+          <path d="M55 86 Q65 78 75 86 T95 86"/>
+          <path d="M60 100 Q70 92 80 100 T100 100"/>
+        </g>
+        <!-- still / fog horizontals -->
+        <g stroke="#2C4770" stroke-width="1" fill="none" opacity="0.45" stroke-linecap="round">
+          <line x1="216" y1="92" x2="266" y2="92"/>
+          <line x1="222" y1="106" x2="260" y2="106"/>
+          <line x1="226" y1="120" x2="254" y2="120"/>
+        </g>
+        <!-- middle path (smooth sailing) -->
+        <path d="M120 130 Q160 120 200 130" stroke="#4A7C59" stroke-width="1.2" fill="none" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="door-num">ii.</div>
+    <h2>Shifting <span class="swash">states</span></h2>
+    <div class="tag">strategies for rough water · for stillness</div>
+    <p>A small library of small things. When the waters are rough, a list to bring you down. When the fog has settled, a list to gently bring you back. Pick what you want to try.</p>
+    <div class="door-foot">
+      <span>Step through <span class="arr">→</span></span>
+      <span class="door-meta">when you need a hand</span>
+    </div>
+  </a>
+
+  <a class="door" data-door="thrive" href="conditions.html">
+    <div class="door-vis" aria-hidden="true">
+      <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="cThreat" cx="0.5" cy="0.4" r="0.6">
+            <stop offset="0" stop-color="#E8C5BD" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#E8C5BD" stop-opacity="0.4"/>
+          </radialGradient>
+          <radialGradient id="cDrive" cx="0.5" cy="0.4" r="0.6">
+            <stop offset="0" stop-color="#F0DAD0" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#F0DAD0" stop-opacity="0.4"/>
+          </radialGradient>
+          <radialGradient id="cSooth" cx="0.5" cy="0.4" r="0.6">
+            <stop offset="0" stop-color="#C9D3E5" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#C9D3E5" stop-opacity="0.4"/>
+          </radialGradient>
+        </defs>
+        <rect width="320" height="180" fill="#F5F0E8"/>
+        <circle cx="115" cy="72" r="46" fill="url(#cThreat)"/>
+        <circle cx="205" cy="72" r="46" fill="url(#cDrive)"/>
+        <circle cx="160" cy="124" r="46" fill="url(#cSooth)"/>
+        <circle cx="115" cy="72" r="46" fill="none" stroke="#C0392B" stroke-width="0.8" opacity="0.35"/>
+        <circle cx="205" cy="72" r="46" fill="none" stroke="#8C6B57" stroke-width="0.8" opacity="0.4"/>
+        <circle cx="160" cy="124" r="46" fill="none" stroke="#2C4770" stroke-width="0.8" opacity="0.35"/>
+      </svg>
+    </div>
+    <div class="door-num">iii.</div>
+    <h2>Conditions to <span class="swash">thrive</span></h2>
+    <div class="tag">three circles · a day in your life</div>
+    <p>What does your day grow from? List what you do, and notice whether it's care for you, care for others, or both. A quiet audit — without judgement, without blame.</p>
+    <div class="door-foot">
+      <span>Step through <span class="arr">→</span></span>
+      <span class="door-meta">a slower reflection</span>
+    </div>
+  </a>
+
+</nav>
+
+<footer>
+  <span class="mark">~</span>
+  <p>Made with care, for noticing.<br>Everything saves to your device only — nothing is uploaded.</p>
+</footer>
+
+</body>
+</html>
