@@ -204,6 +204,7 @@
     justify-content: center;
   }
   .door-vis svg { width: 100%; height: 100%; display: block; }
+  .door-vis img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   .door-num {
     font-family: var(--serif);
@@ -304,84 +305,36 @@
 
 <header class="hero">
   <div class="kicker">A quiet place</div>
-  <h1>Three small <span class="swash">doors</span></h1>
-  <p class="tagline">A few different ways to notice where you are, what helps, and what you're giving yourself room for. Step through whichever fits today — or none at all.</p>
+  <h1>Find your <span class="swash">bearings</span></h1>
+  <p class="tagline">A few ways to take a bearing on where you are, what helps, and what you're giving yourself room for. Step up to whichever fits today — or none at all.</p>
 </header>
 
-<nav class="doors" aria-label="Three sketches">
+<nav class="doors" aria-label="Ways to find your bearings">
 
   <a class="door" data-door="window" href="window.html">
     <div class="door-vis" aria-hidden="true">
-      <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="skyW" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#EFE7D6"/>
-            <stop offset="1" stop-color="#F5F0E8"/>
-          </linearGradient>
-          <linearGradient id="seaW" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#C9DCE3"/>
-            <stop offset="1" stop-color="#A6C2CD"/>
-          </linearGradient>
-        </defs>
-        <rect width="320" height="180" fill="url(#skyW)"/>
-        <path d="M0 110 Q40 100 80 108 T160 110 T240 108 T320 112 L320 180 L0 180 Z" fill="url(#seaW)" opacity="0.85"/>
-        <path d="M0 122 Q40 116 80 120 T160 122 T240 119 T320 123" stroke="#2C5F6E" stroke-width="0.8" fill="none" opacity="0.35"/>
-        <path d="M0 140 Q40 134 80 138 T160 140 T240 137 T320 141" stroke="#2C5F6E" stroke-width="0.6" fill="none" opacity="0.25"/>
-        <g transform="translate(160 96)">
-          <path d="M-12 8 Q0 -2 12 8 L8 16 L-8 16 Z" fill="#2A2420" opacity="0.85"/>
-          <path d="M0 -22 L0 8" stroke="#2A2420" stroke-width="1.4" fill="none"/>
-          <path d="M1 -20 Q10 -10 4 6 Z" fill="#FBF7EF" stroke="#5C534A" stroke-width="0.6"/>
-        </g>
-      </svg>
+      <img src="card-sea.jpg" alt="">
     </div>
     <div class="door-num">i.</div>
     <h2>Your <span class="swash">window</span></h2>
-    <div class="tag">window of tolerance · polyvagal ladder</div>
+    <div class="tag">where you are today · your sea</div>
     <p>A daily tracker. Drag a small boat along the water to show where you are. Add what you notice in body, thoughts, and behaviour. Keep moments in a quiet log over time.</p>
     <div class="door-foot">
-      <span>Step through <span class="arr">→</span></span>
+      <span>Take a bearing <span class="arr">→</span></span>
       <span class="door-meta">a daily noticing</span>
     </div>
   </a>
 
   <a class="door" data-door="shifting" href="shifting-states.html">
     <div class="door-vis" aria-hidden="true">
-      <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <radialGradient id="rough" cx="0.25" cy="0.45" r="0.55">
-            <stop offset="0" stop-color="#FAE8E4"/>
-            <stop offset="1" stop-color="#F5F0E8"/>
-          </radialGradient>
-          <radialGradient id="fog" cx="0.78" cy="0.55" r="0.48">
-            <stop offset="0" stop-color="#E4EAF4"/>
-            <stop offset="1" stop-color="#F5F0E8"/>
-          </radialGradient>
-        </defs>
-        <rect width="320" height="180" fill="#F5F0E8"/>
-        <circle cx="80" cy="80" r="68" fill="url(#rough)" opacity="0.9"/>
-        <circle cx="240" cy="100" r="62" fill="url(#fog)" opacity="0.85"/>
-        <!-- rough water tick lines -->
-        <g stroke="#C0392B" stroke-width="1" fill="none" opacity="0.55" stroke-linecap="round">
-          <path d="M55 70 Q65 62 75 70 T95 70"/>
-          <path d="M55 86 Q65 78 75 86 T95 86"/>
-          <path d="M60 100 Q70 92 80 100 T100 100"/>
-        </g>
-        <!-- still / fog horizontals -->
-        <g stroke="#2C4770" stroke-width="1" fill="none" opacity="0.45" stroke-linecap="round">
-          <line x1="216" y1="92" x2="266" y2="92"/>
-          <line x1="222" y1="106" x2="260" y2="106"/>
-          <line x1="226" y1="120" x2="254" y2="120"/>
-        </g>
-        <!-- middle path (smooth sailing) -->
-        <path d="M120 130 Q160 120 200 130" stroke="#4A7C59" stroke-width="1.2" fill="none" opacity="0.5"/>
-      </svg>
+      <img src="card-rough.jpg" alt="">
     </div>
     <div class="door-num">ii.</div>
     <h2>Shifting <span class="swash">states</span></h2>
     <div class="tag">strategies for rough water · for stillness</div>
-    <p>A small library of small things. When the waters are rough, a list to bring you down. When the fog has settled, a list to gently bring you back. Pick what you want to try.</p>
+    <p>A small library of small things. When the waters are rough, a list to bring you down. When the fog has descended, a list to gently bring you back. Pick what you want to try.</p>
     <div class="door-foot">
-      <span>Step through <span class="arr">→</span></span>
+      <span>Take a bearing <span class="arr">→</span></span>
       <span class="door-meta">when you need a hand</span>
     </div>
   </a>
@@ -399,8 +352,8 @@
             <stop offset="1" stop-color="#F0DAD0" stop-opacity="0.4"/>
           </radialGradient>
           <radialGradient id="cSooth" cx="0.5" cy="0.4" r="0.6">
-            <stop offset="0" stop-color="#C9D3E5" stop-opacity="0.9"/>
-            <stop offset="1" stop-color="#C9D3E5" stop-opacity="0.4"/>
+            <stop offset="0" stop-color="#BCDDC8" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#BCDDC8" stop-opacity="0.4"/>
           </radialGradient>
         </defs>
         <rect width="320" height="180" fill="#F5F0E8"/>
@@ -409,7 +362,7 @@
         <circle cx="160" cy="124" r="46" fill="url(#cSooth)"/>
         <circle cx="115" cy="72" r="46" fill="none" stroke="#C0392B" stroke-width="0.8" opacity="0.35"/>
         <circle cx="205" cy="72" r="46" fill="none" stroke="#8C6B57" stroke-width="0.8" opacity="0.4"/>
-        <circle cx="160" cy="124" r="46" fill="none" stroke="#2C4770" stroke-width="0.8" opacity="0.35"/>
+        <circle cx="160" cy="124" r="46" fill="none" stroke="#4A7C59" stroke-width="0.8" opacity="0.35"/>
       </svg>
     </div>
     <div class="door-num">iii.</div>
@@ -417,7 +370,7 @@
     <div class="tag">three circles · a day in your life</div>
     <p>What does your day grow from? List what you do, and notice whether it's care for you, care for others, or both. A quiet audit — without judgement, without blame.</p>
     <div class="door-foot">
-      <span>Step through <span class="arr">→</span></span>
+      <span>Take a bearing <span class="arr">→</span></span>
       <span class="door-meta">a slower reflection</span>
     </div>
   </a>

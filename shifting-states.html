@@ -298,6 +298,25 @@
   .strat .heart:hover { color: var(--hyper); transform: scale(1.15); }
   .strat.saved .heart { color: var(--hyper); }
 
+  /* add your own */
+  .strat-add { margin-top: 0.9rem; }
+  .strat-add-input {
+    width: 100%; border: none; border-bottom: 1px dashed var(--line);
+    background: transparent; font-family: var(--serif); font-style: italic;
+    font-size: 0.98rem; color: var(--ink-faint); padding: 0.6rem 0.2rem; outline: none;
+    transition: border-color 200ms ease, color 200ms ease;
+  }
+  .strat-add-input:focus { color: var(--ink); border-bottom-style: solid; border-bottom-color: var(--ink-faint); }
+  .strat-add-input::placeholder { color: var(--ink-faint); opacity: 0.7; }
+  .strat .remove {
+    flex-shrink: 0; appearance: none; background: none; border: none;
+    color: var(--ink-faint); font-size: 1rem; line-height: 1; cursor: pointer;
+    padding: 2px 4px; border-radius: 4px; opacity: 0;
+    transition: opacity 180ms ease, color 180ms ease;
+  }
+  .strat:hover .remove, .strat:focus-within .remove { opacity: 0.7; }
+  .strat .remove:hover { color: var(--hyper); opacity: 1; }
+
   /* ---------- random suggestion ---------- */
   .nudge {
     margin-top: 1.5rem; padding: 1.2rem 1.4rem;
@@ -376,7 +395,7 @@
 <body>
 
 <div class="topbar">
-  <a class="back-link" href="index.html"><span class="arr">←</span> back to the doors</a>
+  <a class="back-link" href="index.html"><span class="arr">←</span> back to your bearings</a>
 </div>
 
 <header class="hero">
@@ -427,7 +446,7 @@
         </svg>
       </div>
       <div class="pick-eyebrow">when you need to come back</div>
-      <h2>The fog has <span class="swash">settled</span></h2>
+      <h2>The fog has <span class="swash">descended</span></h2>
       <p class="pick-tag">far away, foggy, hard to begin</p>
     </button>
 
@@ -456,6 +475,10 @@
     </div>
 
     <div class="strat-grid" id="stratGrid"></div>
+
+    <div class="strat-add">
+      <input id="stratAddInput" class="strat-add-input" placeholder="Add your own way to shift…" aria-label="Add your own way to shift state">
+    </div>
 
     <div class="saved-tray" id="savedTray">
       <h4>What you've <span class="swash">kept</span></h4>
@@ -515,13 +538,14 @@
       lede:  'Small ways back. Slow the breath, let the body unbrace, give the system somewhere quieter to land.',
     },
     still: {
-      title: 'When the fog has <em class="swash">settled</em>',
+      title: 'When the fog has <em class="swash">descended</em>',
       lede:  'Small ways back. Wake one sense at a time, no rush — a small movement, a small flavour, a small voice nearby.',
     },
   };
 
   const STORE_KEY = 'ali_shifting_v1';
   let state = JSON.parse(localStorage.getItem(STORE_KEY) || '{"tried":{},"saved":{},"zone":null}');
+  state.custom = state.custom || { rough: [], still: [] };
   function save() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
 
   const els = {
@@ -535,6 +559,7 @@
     nudgeText: document.getElementById('nudgeText'),
     savedTray: document.getElementById('savedTray'),
     savedList: document.getElementById('savedList'),
+    addInput: document.getElementById('stratAddInput'),
   };
 
   function pickZone(zone) {
@@ -557,36 +582,55 @@
     els.nudge.classList.remove('visible');
   }
 
+  function makeStrat(id, label, custom, zone, ci) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'strat';
+    if (state.tried[id]) btn.classList.add('tried');
+    if (state.saved[id]) btn.classList.add('saved');
+    btn.dataset.id = id;
+    btn.innerHTML = `
+      <span class="glyph" aria-hidden="true"></span>
+      <span class="label"></span>
+      <button class="heart" type="button" aria-label="Keep this one" title="Keep this one">${state.saved[id] ? '♥' : '♡'}</button>
+      ${custom ? '<button class="remove" type="button" aria-label="Remove this one" title="Remove">×</button>' : ''}
+    `;
+    btn.querySelector('.label').textContent = label;
+    btn.addEventListener('click', (e) => {
+      if (e.target.closest('.heart') || e.target.closest('.remove')) return;
+      state.tried[id] = !state.tried[id];
+      save();
+      btn.classList.toggle('tried', !!state.tried[id]);
+    });
+    btn.querySelector('.heart').addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.saved[id] = !state.saved[id];
+      save();
+      btn.classList.toggle('saved', !!state.saved[id]);
+      btn.querySelector('.heart').textContent = state.saved[id] ? '♥' : '♡';
+      renderSaved();
+    });
+    if (custom) {
+      btn.querySelector('.remove').addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.custom[zone].splice(ci, 1);
+        delete state.tried[id];
+        delete state.saved[id];
+        save();
+        renderGrid(zone);
+        renderSaved();
+      });
+    }
+    return btn;
+  }
+
   function renderGrid(zone) {
     els.grid.innerHTML = '';
     STRATEGIES[zone].forEach((label, i) => {
-      const id = `${zone}-${i}`;
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'strat';
-      if (state.tried[id]) btn.classList.add('tried');
-      if (state.saved[id]) btn.classList.add('saved');
-      btn.dataset.id = id;
-      btn.innerHTML = `
-        <span class="glyph" aria-hidden="true"></span>
-        <span class="label">${label}</span>
-        <button class="heart" type="button" aria-label="Keep this one" title="Keep this one">${state.saved[id] ? '♥' : '♡'}</button>
-      `;
-      btn.addEventListener('click', (e) => {
-        if (e.target.closest('.heart')) return;
-        state.tried[id] = !state.tried[id];
-        save();
-        btn.classList.toggle('tried', !!state.tried[id]);
-      });
-      btn.querySelector('.heart').addEventListener('click', (e) => {
-        e.stopPropagation();
-        state.saved[id] = !state.saved[id];
-        save();
-        btn.classList.toggle('saved', !!state.saved[id]);
-        btn.querySelector('.heart').textContent = state.saved[id] ? '♥' : '♡';
-        renderSaved();
-      });
-      els.grid.appendChild(btn);
+      els.grid.appendChild(makeStrat(`${zone}-${i}`, label, false));
+    });
+    (state.custom[zone] || []).forEach((label, ci) => {
+      els.grid.appendChild(makeStrat(`c-${zone}-${label}`, label, true, zone, ci));
     });
   }
 
@@ -595,6 +639,12 @@
     Object.keys(STRATEGIES).forEach(zone => {
       STRATEGIES[zone].forEach((label, i) => {
         const id = `${zone}-${i}`;
+        if (state.saved[id]) all.push({ id, label, zone });
+      });
+    });
+    Object.keys(state.custom).forEach(zone => {
+      (state.custom[zone] || []).forEach((label) => {
+        const id = `c-${zone}-${label}`;
         if (state.saved[id]) all.push({ id, label, zone });
       });
     });
@@ -623,6 +673,19 @@
     els.nudge.classList.remove('visible');
     void els.nudge.offsetWidth;
     els.nudge.classList.add('visible');
+  });
+
+  els.addInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const val = els.addInput.value.trim();
+    if (!val || !state.zone) return;
+    if (!state.custom[state.zone].includes(val)) {
+      state.custom[state.zone].push(val);
+      save();
+      renderGrid(state.zone);
+    }
+    els.addInput.value = '';
   });
 
   // restore last zone
