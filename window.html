@@ -28,6 +28,9 @@
     --ink-faint:    #8A7F73;
     --paper:        #FBF7EF;
     --line:         #D9CFB8;
+    --hyper-deep:   #8B2A1F;
+    --amber:        #B89150;
+    --amber-light:  #EFE2C8;
 
     --serif: 'Playfair Display', 'Iowan Old Style', Georgia, serif;
     --sans:  'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -222,6 +225,32 @@
 
   @keyframes rise {
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* draggable boat + before-you-tip edge cue */
+  .boat { pointer-events: auto; cursor: grab; }
+  .boat.grabbing { cursor: grabbing; transition: none; }
+  .edge-flag {
+    position: absolute; top: 10px; left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: rgba(42, 36, 32, 0.82); color: #fff;
+    font-family: var(--sans); font-size: 0.68rem;
+    letter-spacing: 0.1em; padding: 0.32em 0.85em;
+    border-radius: 999px; white-space: nowrap;
+    opacity: 0; pointer-events: none; z-index: 7;
+    transition: opacity 450ms ease, transform 450ms ease;
+  }
+  .wave-frame.near-edge .edge-flag {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .wave-frame.near-edge .boat-layer { animation: layerTremble 0.45s ease-in-out infinite; }
+  @keyframes layerTremble {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-1.1px); }
+    75% { transform: translateX(1.1px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wave-frame.near-edge .boat-layer { animation: none; }
   }
 
   /* ---------- TABS ---------- */
@@ -1361,6 +1390,59 @@
     .zone-name { font-size: 1.15rem; }
     .tab { padding: 1rem 0.85rem; font-size: 0.86rem; }
   }
+
+  /* ---------- THE FORECAST ---------- */
+  .fc-wrap { display: grid; gap: 1.4rem; max-width: 720px; margin: 0 auto; }
+  .fc-card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: clamp(1.4rem, 3vw, 2rem);
+    box-shadow: var(--shadow-soft);
+  }
+  .fc-card h3 { font-family: var(--serif); font-size: 1.35rem; font-style: italic; font-weight: 500; margin: 0 0 0.2em; }
+  .fc-card .sub { font-size: 0.88rem; color: var(--ink-soft); margin: 0 0 1.3rem; }
+
+  .fc-forecast {
+    position: relative; overflow: hidden; border-left: 4px solid var(--green);
+    background: var(--sand); border-radius: var(--r-md);
+    padding: 1.2rem 1.4rem; margin-bottom: 1.4rem; transition: border-color 500ms;
+  }
+  .fc-forecast[data-band="building"] { border-left-color: var(--amber); }
+  .fc-forecast[data-band="rough"], .fc-forecast[data-band="storm"] { border-left-color: var(--hyper); }
+  .fc-eyebrow { font-family: var(--sans); font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.5rem; }
+  .fc-line { font-family: var(--serif); font-style: italic; font-size: 1.12rem; color: var(--ink); line-height: 1.5; }
+  .fc-tail { display: block; margin-top: 0.5rem; font-family: var(--sans); font-size: 0.82rem; color: var(--ink-soft); }
+
+  .fc-sea { position: relative; height: 90px; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); margin-bottom: 0.4rem; background: linear-gradient(180deg, #E7DFCF, #DFE7EA); }
+  .fc-sea svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .fc-wave { opacity: 0.55; }
+  .fc-sea-amp { transition: transform 500ms ease; transform-origin: center bottom; }
+
+  .fc-strip-label { display: flex; justify-content: space-between; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin: 0.5rem 0 0.2rem; }
+  .fc-range { -webkit-appearance: none; appearance: none; width: 100%; height: 36px; background: transparent; cursor: grab; margin: 0; }
+  .fc-range::-webkit-slider-runnable-track { height: 10px; border-radius: 999px; border: 1px solid var(--line); background: linear-gradient(90deg, var(--green-light) 0%, var(--green-light) 22%, var(--amber-light) 30%, var(--amber-light) 52%, var(--hyper-soft) 60%, var(--hyper-soft) 100%); }
+  .fc-range::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -12px; width: 30px; height: 30px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink); box-shadow: 0 2px 8px rgba(42,36,32,0.2), inset 0 0 0 4px var(--paper); }
+  .fc-range::-moz-range-track { height: 10px; border-radius: 999px; border: 1px solid var(--line); background: linear-gradient(90deg, var(--green-light) 0%, var(--green-light) 22%, var(--amber-light) 30%, var(--amber-light) 52%, var(--hyper-soft) 60%, var(--hyper-soft) 100%); }
+  .fc-range::-moz-range-thumb { width: 30px; height: 30px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink); }
+  .fc-readout { text-align: center; font-family: var(--serif); font-style: italic; font-size: 1.05rem; margin: 0.4rem 0 1.2rem; color: var(--ink-soft); }
+  .fc-readout b { font-style: normal; font-weight: 600; color: var(--ink); }
+
+  .fc-trend-label { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.5rem; text-align: center; }
+  .fc-trend { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+  .fc-trend button { appearance: none; border: 1px solid var(--line); background: var(--paper); border-radius: 999px; font: inherit; font-size: 0.84rem; cursor: pointer; padding: 0.5em 1em; color: var(--ink-soft); transition: all 180ms; }
+  .fc-trend button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .fc-signs { list-style: none; padding: 0; margin: 0 0 0.8rem; display: grid; gap: 0.5rem; }
+  .fc-signs li { display: flex; align-items: center; gap: 0.7em; background: var(--sand); border: 1px solid var(--line); border-radius: var(--r-md); padding: 0.6rem 0.8rem; }
+  .fc-signs input[type=checkbox] { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; border: 1.5px solid var(--ink-faint); border-radius: 5px; flex: 0 0 auto; cursor: pointer; background: var(--paper); position: relative; }
+  .fc-signs input:checked { background: var(--amber); border-color: var(--amber); }
+  .fc-signs input:checked::after { content: ''; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px; border: solid var(--paper); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .fc-signs .txt { flex: 1; font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+  .fc-signs input:checked ~ .txt { color: var(--hyper-deep); }
+  .fc-signs .del { appearance: none; background: none; border: none; color: var(--ink-faint); cursor: pointer; font-size: 1.1rem; line-height: 1; opacity: 0.5; }
+  .fc-signs .del:hover { opacity: 1; color: var(--hyper); }
+  .fc-add { width: 100%; border: none; border-bottom: 1px dashed var(--line); background: transparent; font-family: var(--serif); font-style: italic; font-size: 0.98rem; color: var(--ink-faint); padding: 0.55rem 0.2rem; outline: none; }
+  .fc-add:focus { color: var(--ink); border-bottom-style: solid; }
+  .fc-seed-hint { font-size: 0.78rem; color: var(--ink-faint); font-style: italic; margin-top: 0.6rem; }
 </style>
 </head>
 <body>
@@ -1380,10 +1462,11 @@
 <div class="tabs-wrap">
   <div class="tabs" role="tablist" aria-label="Window tracker sections">
     <button class="tab" role="tab" aria-selected="true" data-tab="now"><span class="num">i.</span>Where am I today</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="zones"><span class="num">ii.</span>My sea</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="window"><span class="num">iii.</span>My sails</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="ladder"><span class="num">iv.</span>The lighthouse</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="log"><span class="num">v.</span>My log</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="forecast"><span class="num">ii.</span>The forecast</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="zones"><span class="num">iii.</span>My sea</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="window"><span class="num">iv.</span>My sails</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="ladder"><span class="num">v.</span>The lighthouse</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="log"><span class="num">vi.</span>My log</button>
   </div>
 </div>
 
@@ -1458,6 +1541,56 @@
           </button>
           <span class="saved-flash" id="savedFlash">saved.</span>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ----- FORECAST ----- -->
+  <!-- Placeholder shipping-forecast copy below (LINES in JS) — Ali supplies real language. -->
+  <section class="panel" data-panel="forecast" role="tabpanel">
+    <div class="panel-head">
+      <h2>The <em class="swash">forecast</em></h2>
+      <p>Not where you are right now — which way the weather is turning, and the early signs a storm might be coming in. Slide the sea state, set the trend, and name your own signs on the horizon.</p>
+    </div>
+
+    <div class="fc-wrap">
+      <div class="fc-card">
+        <h3>The forecast for your waters</h3>
+        <p class="sub">A gentle early-warning system — catch the wind freshening before it's a gale.</p>
+
+        <div class="fc-forecast" id="fcForecast" data-band="settled">
+          <div class="fc-eyebrow">issued just now · for the next few hours</div>
+          <span class="fc-line" id="fcLine"></span>
+          <span class="fc-tail" id="fcTail"></span>
+        </div>
+
+        <div class="fc-sea" aria-hidden="true">
+          <svg viewBox="0 0 600 90" preserveAspectRatio="none">
+            <g class="fc-sea-amp" id="fcSeaAmp">
+              <path class="fc-wave" id="fcW1" fill="#7FA0B0" d=""></path>
+              <path class="fc-wave" id="fcW2" fill="#5E7488" d="" opacity="0.4"></path>
+            </g>
+          </svg>
+        </div>
+
+        <div class="fc-strip-label"><span>glassy calm</span><span>wind building</span><span>gale</span></div>
+        <input type="range" class="fc-range" id="fcState" min="0" max="100" value="12" aria-label="Sea state">
+        <div class="fc-readout">The sea is <b id="fcStateName">glassy and calm</b></div>
+
+        <div class="fc-trend-label">and the wind is…</div>
+        <div class="fc-trend" role="group" aria-label="Trend">
+          <button type="button" data-t="easing" aria-pressed="false">↘ easing</button>
+          <button type="button" data-t="holding" aria-pressed="true">→ holding</button>
+          <button type="button" data-t="rising" aria-pressed="false">↗ rising</button>
+        </div>
+      </div>
+
+      <div class="fc-card">
+        <h3>Signs on the horizon</h3>
+        <p class="sub">Your own early tells — the first small things that say rough water may be coming. Tick any you can see right now, or add your own.</p>
+        <ul class="fc-signs" id="fcSigns"></ul>
+        <input class="fc-add" id="fcAddSign" placeholder="Add a sign you've learned to spot…">
+        <p class="fc-seed-hint">e.g. "jaw tightening", "replies getting shorter", "checking my phone again and again"</p>
       </div>
     </div>
   </section>
@@ -1717,6 +1850,7 @@
       dorsal: '',
       pos: 50
     },
+    forecast: { state: 12, trend: 'holding', signs: [], checked: {} },
     log: []
   };
 
@@ -1735,6 +1869,7 @@
         },
         window: Object.assign({ widens: [], narrows: [] }, saved.window || {}),
         ladder: Object.assign({ ventral: '', symp: '', dorsal: '', pos: 50 }, saved.ladder || {}),
+        forecast: Object.assign({ state: 12, trend: 'holding', signs: [], checked: {} }, saved.forecast || {}),
         log: Array.isArray(saved.log) ? saved.log : []
       });
     } catch (e) {
@@ -1818,7 +1953,12 @@
     return 22 - ((pos - 66.66) / 33.34) * 10;
   }
 
-  function applyPosition(pos, { syncSlider = false } = {}) {
+  // gentle swell — the boat is carried, never sits dead-centre
+  function leftFor(pos) {
+    return 50 + Math.sin(pos / 100 * Math.PI * 1.2 - 0.35) * 4.5;
+  }
+
+  function applyPosition(pos, { syncSlider = false, linearY = false } = {}) {
     pos = Math.max(0, Math.min(100, pos));
     state.sliderPos = pos;
 
@@ -1828,7 +1968,13 @@
     readoutZone.textContent = ZONE_NAMES[zone];
     hint.textContent = ZONE_HINTS[zone];
 
-    boat.style.top = posToY(pos) + '%';
+    // before-you-tip: warn as the marker nears either boundary
+    const nearEdge = Math.abs(pos - 33.34) < 6 || Math.abs(pos - 66.66) < 6;
+    waveFrame.classList.toggle('near-edge', nearEdge);
+
+    boat.style.left = leftFor(pos) + '%';
+    // follow the finger linearly while dragging; settle into the band on release
+    boat.style.top = (linearY ? (80 - pos * 0.68) : posToY(pos)) + '%';
 
     if (syncSlider) slider.value = String(pos);
 
@@ -1838,6 +1984,40 @@
   slider.addEventListener('input', e => {
     applyPosition(Number(e.target.value));
   });
+
+  // -------- DRAG THE BOAT --------
+  // grab the boat (or anywhere on the water) to set your position directly
+  let boatDrag = false;
+  function boatYToPos(clientY) {
+    const r = waveFrame.getBoundingClientRect();
+    const yPct = (clientY - r.top) / r.height * 100;
+    return Math.max(0, Math.min(100, (80 - yPct) / 0.68));
+  }
+  function boatStart(evt) {
+    boatDrag = true;
+    boat.classList.add('grabbing');
+    boatMove(evt);
+    evt.preventDefault();
+  }
+  function boatMove(evt) {
+    if (!boatDrag) return;
+    const y = evt.touches ? evt.touches[0].clientY : evt.clientY;
+    applyPosition(boatYToPos(y), { syncSlider: true, linearY: true });
+    evt.preventDefault();
+  }
+  function boatEnd() {
+    if (!boatDrag) return;
+    boatDrag = false;
+    boat.classList.remove('grabbing');
+    applyPosition(state.sliderPos, { syncSlider: true });  // settle into the band
+  }
+  waveFrame.addEventListener('mousedown', boatStart);
+  waveFrame.addEventListener('touchstart', boatStart, { passive: false });
+  document.addEventListener('mousemove', boatMove);
+  document.addEventListener('touchmove', boatMove, { passive: false });
+  document.addEventListener('mouseup', boatEnd);
+  document.addEventListener('touchend', boatEnd);
+  document.addEventListener('touchcancel', boatEnd);
 
   // -------- NOTICE TEXTAREAS --------
   document.querySelectorAll('.notice-card textarea').forEach(ta => {
@@ -2156,6 +2336,83 @@
       localStorage.setItem(WELCOMED_KEY, '1');
     }
   });
+
+  // -------- THE FORECAST --------
+  (function initForecast() {
+    const fc = document.getElementById('fcForecast');
+    if (!fc) return;
+    const fcLine = document.getElementById('fcLine');
+    const fcTail = document.getElementById('fcTail');
+    const fcState = document.getElementById('fcState');
+    const fcStateName = document.getElementById('fcStateName');
+    const fcSeaAmp = document.getElementById('fcSeaAmp');
+    const fcW1 = document.getElementById('fcW1');
+    const fcW2 = document.getElementById('fcW2');
+    const fcSigns = document.getElementById('fcSigns');
+    const fcAdd = document.getElementById('fcAddSign');
+    const fcStore = state.forecast;
+
+    function band(v) { return v < 25 ? 'settled' : v < 55 ? 'building' : v < 80 ? 'rough' : 'storm'; }
+    const NAME = { settled: 'glassy and calm', building: 'starting to chop — wind freshening', rough: 'rough and white-capped', storm: 'a full sea running' };
+    // Placeholder shipping-forecast copy — Ali supplies real language.
+    const LINES = {
+      settled: { easing: 'Settled and fair. Visibility good. Fair winds, gentle swell.', holding: 'Calm, glassy. Slight swell, nothing on the glass. A good hour to be out.', rising: 'Calm for now — but a breath of wind on the water. Worth a glance to the horizon.' },
+      building: { easing: 'Chop easing, wind dropping away. The worst of it passing. Steady as she goes.', holding: 'Wind freshening, sea building. Holding — but this is the hour to take in sail.', rising: 'Wind rising, sea building quickly. Rough water possible before long. Watch the horizon.' },
+      rough: { easing: 'Rough still, but the wind backing off. The peak is behind you. Hold your course.', holding: 'Rough water, white caps. Holding hard. Reef in — small steady movements now.', rising: 'Rough and worsening, gale warning. Make for shelter. One thing at a time.' },
+      storm: { easing: 'Storm easing at last. Still high seas, but the wind is spent. You came through it.', holding: 'Full gale, heavy seas. Ride it out — it will pass. You are still afloat.', rising: 'Storm building to its height. Hold on. Nothing to fix now but to weather it.' }
+    };
+
+    function wavePath(amp, base) {
+      let d = `M0 ${base}`;
+      for (let x = 0; x <= 600; x += 60) { const y = base + (x / 60 % 2 ? -amp : amp); d += ` Q${x + 30} ${y} ${x + 60} ${base}`; }
+      return d + ' L600 90 L0 90 Z';
+    }
+
+    function render() {
+      const v = +fcState.value;
+      const b = band(v);
+      fc.dataset.band = b;
+      fcStateName.textContent = NAME[b];
+      fcLine.textContent = LINES[b][fcStore.trend];
+      const amp = 3 + (v / 100) * 26;
+      fcW1.setAttribute('d', wavePath(amp, 46));
+      fcW2.setAttribute('d', wavePath(amp * 0.7, 58));
+      fcSeaAmp.style.transform = 'scaleY(' + (1 + v / 140) + ')';
+      const sighted = Object.values(fcStore.checked).filter(Boolean).length;
+      fcTail.textContent = sighted ? (sighted + ' sign' + (sighted > 1 ? 's' : '') + ' sighted on the horizon.') : 'No signs sighted yet — a clear glass.';
+      document.querySelectorAll('.fc-trend button').forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.t === fcStore.trend));
+    }
+
+    fcState.addEventListener('input', () => { fcStore.state = +fcState.value; debouncedSave(); render(); });
+    document.querySelectorAll('.fc-trend button').forEach(btn =>
+      btn.addEventListener('click', () => { fcStore.trend = btn.dataset.t; debouncedSave(); render(); }));
+
+    function renderSigns() {
+      fcSigns.innerHTML = '';
+      fcStore.signs.forEach((s, i) => {
+        const li = document.createElement('li');
+        const id = 'fcsg' + i;
+        li.innerHTML = '<input type="checkbox" id="' + id + '"><label class="txt" for="' + id + '"></label><button class="del" type="button" aria-label="Remove">×</button>';
+        li.querySelector('.txt').textContent = s;
+        const cb = li.querySelector('input');
+        cb.checked = !!fcStore.checked[s];
+        cb.addEventListener('change', () => { fcStore.checked[s] = cb.checked; debouncedSave(); render(); });
+        li.querySelector('.del').addEventListener('click', () => { fcStore.signs.splice(i, 1); delete fcStore.checked[s]; debouncedSave(); renderSigns(); render(); });
+        fcSigns.appendChild(li);
+      });
+    }
+    fcAdd.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const val = fcAdd.value.trim();
+        if (val && !fcStore.signs.includes(val)) { fcStore.signs.push(val); debouncedSave(); renderSigns(); }
+        fcAdd.value = '';
+      }
+    });
+
+    fcState.value = fcStore.state;
+    renderSigns();
+    render();
+  })();
 
   // -------- INITIAL RENDER --------
   ['hyper','green','hypo'].forEach(zone => {
