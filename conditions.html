@@ -256,9 +256,12 @@
   .circles-figure img { width: 100%; height: auto; display: block; }
   .port-hotspot {
     position: absolute; transform: translate(-50%, -50%);
-    width: 22%; aspect-ratio: 1 / 1; border-radius: 50%;
+    width: 24%; aspect-ratio: 1 / 1; border-radius: 50%;
     appearance: none; border: none; background: transparent;
     padding: 0; cursor: pointer;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; gap: 0.3rem;
     transition: box-shadow 300ms ease;
   }
   .port-hotspot:hover, .port-hotspot:focus-visible {
@@ -267,6 +270,18 @@
   }
   .port-hotspot.active {
     box-shadow: 0 0 0 4px rgba(255,255,255,0.6), 0 0 0 8px var(--green);
+  }
+  .port-name {
+    font-family: var(--sans); font-weight: 600;
+    font-size: clamp(0.5rem, 1.5vw, 0.72rem);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: #fff; text-shadow: 0 1px 4px rgba(40,30,20,0.6);
+  }
+  .port-tag {
+    font-family: var(--serif); font-style: italic;
+    font-size: clamp(0.62rem, 1.7vw, 0.95rem);
+    color: #fff; line-height: 1.25;
+    text-shadow: 0 1px 4px rgba(40,30,20,0.6);
   }
 
   /* circle detail panel */
@@ -542,9 +557,18 @@
 
   <figure class="circles-figure">
     <img src="conditions.png" alt="Three brass portholes showing the sea in three states — Bracing (stormy red water, seeking protection and safety), Reaching (a rising teal wave, seeking resources and reward), and Settling (calm layered water, seeking connection and safeness) — set between Stress and Rest.">
-    <button class="port-hotspot" data-c="threat" type="button" aria-pressed="false" aria-label="Bracing — seeking protection and safety" style="left:35.6%; top:43.1%;"></button>
-    <button class="port-hotspot" data-c="drive" type="button" aria-pressed="false" aria-label="Reaching — seeking resources and reward" style="left:65.3%; top:43.1%;"></button>
-    <button class="port-hotspot" data-c="sooth" type="button" aria-pressed="false" aria-label="Settling — seeking connection and safeness" style="left:50.8%; top:74.9%;"></button>
+    <button class="port-hotspot" data-c="threat" type="button" aria-pressed="false" aria-label="Bracing — seeking protection and safety" style="left:31%; top:45%;">
+      <span class="port-name">Bracing</span>
+      <span class="port-tag">seeking protection<br>and safety</span>
+    </button>
+    <button class="port-hotspot" data-c="drive" type="button" aria-pressed="false" aria-label="Reaching — seeking resources and reward" style="left:67%; top:43%;">
+      <span class="port-name">Reaching</span>
+      <span class="port-tag">seeking resources<br>and reward</span>
+    </button>
+    <button class="port-hotspot" data-c="sooth" type="button" aria-pressed="false" aria-label="Settling — seeking connection and safeness" style="left:49%; top:74%;">
+      <span class="port-name">Settling</span>
+      <span class="port-tag">seeking connection<br>and safeness</span>
+    </button>
   </figure>
 
   <div class="circle-detail" id="circleDetail">
@@ -628,7 +652,7 @@
 
 <footer>
   <span class="mark">~</span>
-  <p>Made with care, for noticing.</p>
+  <p>Made with care, for noticing. · <a href="privacy.html" style="color:#8A7F73;">Privacy</a></p>
 </footer>
 
 <script>
