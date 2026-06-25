@@ -952,7 +952,7 @@
     gap: 1.6rem;
   }
   @media (min-width: 880px) {
-    .ladder-wrap { grid-template-columns: 220px 1fr; gap: 2.4rem; align-items: start; }
+    .ladder-wrap { grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 2.4rem; align-items: start; }
   }
 
   .ladder-vis {
@@ -1000,6 +1000,25 @@
   .ladder-marker.grabbing { cursor: grabbing; transition: none; }
 
   .ladder-cards { display: grid; gap: 1.1rem; }
+
+  /* lighthouse vis */
+  .lh-vis { position: sticky; top: 80px; }
+  @media (max-width: 879px) { .lh-vis { position: static; } }
+  .lh-stage { position: relative; width: 100%; aspect-ratio: 1890/1417; border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-soft); border: 1px solid var(--line); background: var(--sand); user-select: none; touch-action: none; }
+  .lh-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .lh-track { position: absolute; left: 30%; top: 16%; height: 50%; width: 2px; background: rgba(42,36,32,.18); transform: translateX(-50%); }
+  .lh-marker { position: absolute; left: 30%; top: 18%; width: 24px; height: 24px; border-radius: 50%; transform: translate(-50%,-50%); background: var(--paper); border: 2px solid var(--ink); box-shadow: 0 2px 8px rgba(42,36,32,.25), inset 0 0 0 4px var(--paper); cursor: grab; z-index: 6; transition: top 280ms ease-out; }
+  .lh-marker.grabbing { cursor: grabbing; transition: none; }
+  .lh-dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; transform: translate(-50%,-50%); z-index: 5; cursor: help; border: 2px solid var(--paper); box-shadow: 0 1px 4px rgba(42,36,32,.3); }
+  .lh-dot[data-rung="ventral"] { background: var(--green); }
+  .lh-dot[data-rung="symp"] { background: #B89150; }
+  .lh-dot[data-rung="dorsal"] { background: var(--hypo); }
+  .lh-dot.lit { box-shadow: 0 0 0 6px rgba(232,193,90,.35), 0 1px 4px rgba(42,36,32,.3); }
+  .lh-pop { position: absolute; z-index: 7; min-width: 150px; max-width: 190px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: .6rem .75rem; box-shadow: var(--shadow-soft); opacity: 0; transform: translateY(4px); transition: opacity 200ms, transform 200ms; pointer-events: none; }
+  .lh-dot:hover + .lh-pop { opacity: 1; transform: translateY(0); }
+  .lh-pop .nm { display: block; font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--ink); }
+  .lh-pop .mn { display: block; font-size: .74rem; color: var(--ink-soft); margin-top: .15rem; line-height: 1.4; }
+  .lh-hint { position: absolute; right: 8px; bottom: 8px; z-index: 6; font-size: .68rem; color: var(--ink-soft); background: rgba(251,247,239,.85); border: 1px solid var(--line); border-radius: 999px; padding: .2em .6em; pointer-events: none; }
 
   .rung-card {
     background: var(--paper);
@@ -1354,51 +1373,7 @@
     <p class="tagline">A gentle space to notice where you are today, and what helps you feel steady.</p>
   </div>
 
-  <div class="wave-frame" id="waveFrame" data-active="green">
-    <video class="hero-wave" autoplay loop muted playsinline preload="auto" poster="hero-wave-poster.jpg" aria-hidden="true">
-      <source src="hero-wave.mp4" type="video/mp4">
-    </video>
-    <div class="boat-layer">
-      <div class="boat" id="boat">
-        <!-- illustrative watercolour-feel boat — swap for <img src="hero-boat.png"> if a painted asset is supplied -->
-        <div class="boat-bob">
-          <svg viewBox="0 0 64 76" aria-hidden="true">
-            <!-- soft water reflection beneath -->
-            <ellipse cx="32" cy="62" rx="22" ry="2.2" fill="#1F1A16" opacity="0.18"/>
-            <ellipse cx="32" cy="64" rx="14" ry="1.2" fill="#1F1A16" opacity="0.10"/>
-
-            <!-- paint-bleed halo behind hull (soft watercolour edge) -->
-            <path d="M9,49 Q32,47 55,49 Q51,63 32,64 Q13,63 9,49 Z"
-                  fill="#FBF7EF" opacity="0.55"/>
-
-            <!-- mast — slightly hand-drawn curve, off-vertical -->
-            <path d="M30.5,8 Q31,28 31.5,50"
-                  stroke="#2A2420" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-
-            <!-- sail — single triangular, billowed by wind -->
-            <path d="M30.5,8 Q42,26 52,50 Q44,51 30.5,50 Z"
-                  fill="#FBF7EF" stroke="#2A2420" stroke-width="1.4" stroke-linejoin="round"/>
-
-            <!-- inner sail crease, warm watercolour shadow -->
-            <path d="M30.5,13 Q39,27 47,48 L30.5,48 Z"
-                  fill="#E8DEC8" opacity="0.65"/>
-
-            <!-- highlight along leading edge of sail -->
-            <path d="M30.5,10 Q31.2,28 31.5,46"
-                  stroke="#FFFFFF" stroke-width="1.1" fill="none" opacity="0.55"/>
-
-            <!-- hull — dark crescent, soft hand-painted edge -->
-            <path d="M11,50 Q32,48.5 53,50 Q49,62 32,63 Q15,62 11,50 Z"
-                  fill="#2A2420" stroke="#2A2420" stroke-width="0.6" stroke-linejoin="round"/>
-
-            <!-- waterline highlight on hull -->
-            <path d="M14,53 Q32,52 50,53"
-                  stroke="#FBF7EF" stroke-width="0.7" fill="none" opacity="0.45"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- sea + boat now live in the "Where am I today" panel, beside the barometer -->
 </header>
 
 <!-- ================= TABS ================= -->
@@ -1407,7 +1382,7 @@
     <button class="tab" role="tab" aria-selected="true" data-tab="now"><span class="num">i.</span>Where am I today</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="zones"><span class="num">ii.</span>My sea</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="window"><span class="num">iii.</span>My sails</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="ladder"><span class="num">iv.</span>Polyvagal ladder</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="ladder"><span class="num">iv.</span>The lighthouse</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="log"><span class="num">v.</span>My log</button>
   </div>
 </div>
@@ -1422,26 +1397,38 @@
       <p>Drag the marker along the water to show where you are right now. There's no right answer — just a moment of noticing.</p>
     </div>
 
-    <div class="barometer">
-      <div class="barometer-head">
-        <h3>The barometer</h3>
-        <div class="barometer-readout" id="readout" data-zone="green">
-          You are in <strong id="readoutZone">your window</strong>
+    <div class="now-grid">
+      <div class="wave-frame" id="waveFrame" data-active="green">
+        <video class="hero-wave" autoplay loop muted playsinline preload="auto" aria-hidden="true">
+          <source src="seascape.mp4" type="video/mp4">
+        </video>
+        <div class="boat-layer">
+          <div class="boat" id="boat"><div class="boat-bob"><img src="boat-final.png" alt=""></div></div>
         </div>
+        <div class="edge-flag" id="edgeFlag">nearing the edge…</div>
       </div>
 
-      <div class="slider-track">
-        <div class="slider-rail"></div>
-        <input type="range" min="0" max="100" value="50" class="slider-input" id="slider" aria-label="Where are you today?">
-      </div>
+      <div class="barometer">
+        <div class="barometer-head">
+          <h3>The barometer</h3>
+          <div class="barometer-readout" id="readout" data-zone="green">
+            You are in <strong id="readoutZone">your window</strong>
+          </div>
+        </div>
 
-      <div class="slider-labels">
-        <span>still water</span>
-        <span>your window</span>
-        <span>rough water</span>
-      </div>
+        <div class="slider-track">
+          <div class="slider-rail"></div>
+          <input type="range" min="0" max="100" value="50" class="slider-input" id="slider" aria-label="Where are you today?">
+        </div>
 
-      <p class="barometer-hint" id="hint">A steady middle. Smooth sailing — your nervous system has room to feel, think and respond.</p>
+        <div class="slider-labels">
+          <span>still water</span>
+          <span>your window</span>
+          <span>rough water</span>
+        </div>
+
+        <p class="barometer-hint" id="hint">A steady middle. Smooth sailing — your nervous system has room to feel, think and respond.</p>
+      </div>
     </div>
 
     <div class="notice-block">
@@ -1619,48 +1606,32 @@
   <!-- ----- LADDER ----- -->
   <section class="panel" data-panel="ladder" role="tabpanel">
     <div class="panel-head">
-      <h2>The polyvagal <em class="swash">ladder</em></h2>
-      <p>A simple picture of three places your nervous system can be. At the top — open, here, connected. In the middle — stirred up, energy looking for somewhere to go. At the bottom — quiet, foggy, far away. Slide the marker on the ladder to show where you are today, and it'll travel with you to your barometer.</p>
+      <h2>The <em class="swash">lighthouse</em></h2>
+      <p>One lighthouse, standing through every weather. At the top, the lamp is lit and the beam reaches out — open, here, connected. In the middle, the seas rise and the wind gets up — stirred, energy looking for somewhere to go. At the bottom, the fog rolls in and the light dims — quiet, far away. The lighthouse doesn't move; only the weather does. Drag the marker up toward the light or down to the rocks to show where you are today — hover each point to see what it means.</p>
     </div>
 
     <div class="ladder-wrap">
 
-      <div class="ladder-vis">
-        <svg class="ladder-svg" id="ladderSvg" viewBox="0 0 200 360" aria-hidden="true">
-          <!-- side rails -->
-          <line x1="60" y1="20" x2="60" y2="340" class="rung-rope"/>
-          <line x1="140" y1="20" x2="140" y2="340" class="rung-rope"/>
-          <!-- top label -->
-          <text x="100" y="14" text-anchor="middle" class="rung-label" style="font-size: 10px;">where i am</text>
-
-          <!-- rungs (3) -->
-          <g>
-            <line x1="55" y1="60" x2="145" y2="60" class="rung-bar rung-ventral"/>
-            <text x="155" y="64" class="rung-label">ventral</text>
-          </g>
-          <g>
-            <line x1="55" y1="180" x2="145" y2="180" class="rung-bar rung-symp"/>
-            <text x="155" y="184" class="rung-label">sympathetic</text>
-          </g>
-          <g>
-            <line x1="55" y1="300" x2="145" y2="300" class="rung-bar rung-dorsal"/>
-            <text x="155" y="304" class="rung-label">dorsal</text>
-          </g>
-
-          <!-- intermediate rungs -->
-          <line x1="58" y1="120" x2="142" y2="120" class="rung-rope" stroke-width="1" opacity="0.3"/>
-          <line x1="58" y1="240" x2="142" y2="240" class="rung-rope" stroke-width="1" opacity="0.3"/>
-
-          <!-- marker -->
-          <circle id="ladderMarker" class="ladder-marker" cx="100" cy="180" r="11"/>
-        </svg>
+      <div class="lh-vis">
+        <div class="lh-stage" id="lhStage">
+          <img src="lighthousepng.png" alt="watercolour lighthouse">
+          <div class="lh-track"></div>
+          <div class="lh-dot" data-rung="ventral" style="left:30%;top:18%"></div>
+          <div class="lh-pop" style="left:38%;top:9%"><span class="nm">In the light</span><span class="mn">the lamp lit, the beam reaching — open, here, connected</span></div>
+          <div class="lh-dot" data-rung="symp" style="left:30%;top:42%"></div>
+          <div class="lh-pop" style="left:38%;top:34%"><span class="nm">Out in the storm</span><span class="mn">the seas rising — stirred, energy looking for somewhere to go</span></div>
+          <div class="lh-dot" data-rung="dorsal" style="left:28%;top:66%"></div>
+          <div class="lh-pop" style="left:36%;top:60%"><span class="nm">Lost in the fog</span><span class="mn">the light dimmed — quiet, far away, still standing</span></div>
+          <div class="lh-marker" id="lhMarker"></div>
+          <div class="lh-hint">drag ↕ · hover the dots</div>
+        </div>
       </div>
 
       <div class="ladder-cards">
 
         <div class="rung-card" data-rung="ventral">
           <div class="rung-head">
-            <h3>Ventral vagal</h3>
+            <h3>In the light</h3>
             <span class="stage">safe · connected · social</span>
           </div>
           <p class="prompt">What people, places or practices help you feel safe and connected?</p>
@@ -1669,7 +1640,7 @@
 
         <div class="rung-card" data-rung="symp">
           <div class="rung-head">
-            <h3>Sympathetic</h3>
+            <h3>Out in the storm</h3>
             <span class="stage">mobilised · fight · flight</span>
           </div>
           <p class="prompt">What stirs this up for you? What small things help you settle?</p>
@@ -1678,7 +1649,7 @@
 
         <div class="rung-card" data-rung="dorsal">
           <div class="rung-head">
-            <h3>Dorsal vagal</h3>
+            <h3>Lost in the fog</h3>
             <span class="stage">shutdown · collapse · freeze</span>
           </div>
           <p class="prompt">What tends to pull you into the quiet? What helps you gently come back?</p>
@@ -1847,10 +1818,9 @@
     return 22 - ((pos - 66.66) / 33.34) * 10;
   }
 
-  function applyPosition(pos, { syncSlider = false, syncLadder = false } = {}) {
+  function applyPosition(pos, { syncSlider = false } = {}) {
     pos = Math.max(0, Math.min(100, pos));
     state.sliderPos = pos;
-    state.ladder.pos = pos;
 
     const zone = zoneFromPosition(pos);
     waveFrame.dataset.active = zone;
@@ -1861,14 +1831,12 @@
     boat.style.top = posToY(pos) + '%';
 
     if (syncSlider) slider.value = String(pos);
-    if (syncLadder) updateLadderMarker(pos);
 
-    updateRungActive(zone);
     debouncedSave();
   }
 
   slider.addEventListener('input', e => {
-    applyPosition(Number(e.target.value), { syncLadder: true });
+    applyPosition(Number(e.target.value));
   });
 
   // -------- NOTICE TEXTAREAS --------
@@ -2013,82 +1981,49 @@
     });
   });
 
-  // -------- LADDER --------
-  const ladderSvg = document.getElementById('ladderSvg');
-  const ladderMarker = document.getElementById('ladderMarker');
+  // -------- LIGHTHOUSE --------
+  const lhStage = document.getElementById('lhStage');
+  const lhMarker = document.getElementById('lhMarker');
+  const LH_TOP = 18, LH_BOT = 66;   // marker travel %, light (top) → rocks (bottom)
+  function lhPosToTop(p) { return LH_BOT - (p / 100) * (LH_BOT - LH_TOP); }   // p100 -> 18% (light), p0 -> 66% (rocks)
+  function lhStateFromPos(p) { return p > 66 ? 'ventral' : p < 34 ? 'dorsal' : 'symp'; }
 
-  // ladder svg has rungs at y=60 (top, ventral), y=180 (mid, symp), y=300 (bottom, dorsal)
-  // map ladder pos 0-100 -> y 320 (bottom) ... 40 (top)  ; pos 0 = dorsal-ish, 100 = ventral-ish
-  function posToLadderY(pos) {
-    return 320 - (pos / 100) * 280;
-  }
-  function ladderYToPos(y) {
-    let p = (320 - y) / 280 * 100;
-    return Math.max(0, Math.min(100, p));
-  }
-
-  function updateLadderMarker(pos) {
-    ladderMarker.setAttribute('cy', posToLadderY(pos));
-  }
-
-  function updateRungActive(zone) {
-    document.querySelectorAll('.rung-card').forEach(c => c.classList.remove('active'));
-    let target = null;
-    if (zone === 'hyper') target = 'symp';
-    else if (zone === 'green') target = 'ventral';
-    else if (zone === 'hypo') target = 'dorsal';
-    if (target) {
-      const card = document.querySelector(`.rung-card[data-rung="${target}"]`);
-      if (card) card.classList.add('active');
-    }
+  function lhRender(p, animated) {
+    lhMarker.classList.toggle('grabbing', !animated);
+    lhMarker.style.top = lhPosToTop(p) + '%';
+    const s = lhStateFromPos(p);
+    document.querySelectorAll('.lh-dot').forEach(d => d.classList.toggle('lit', d.dataset.rung === s));
+    document.querySelectorAll('.rung-card').forEach(c => c.classList.toggle('active', c.dataset.rung === s));
+    state.ladder.lhpos = p;
+    debouncedSave();
   }
 
-  // ladder marker drag
-  let dragging = false;
-  function ladderEvtToY(evt) {
-    const rect = ladderSvg.getBoundingClientRect();
-    const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
-    const ratio = (clientY - rect.top) / rect.height;
-    return ratio * 360;
+  let lhDrag = false;
+  function lhYToPos(clientY) {
+    const r = lhStage.getBoundingClientRect();
+    const topPct = (clientY - r.top) / r.height * 100;
+    return Math.max(0, Math.min(100, (LH_BOT - topPct) / (LH_BOT - LH_TOP) * 100));
   }
+  function lhStart(evt) { lhDrag = true; lhMarker.classList.add('grabbing'); lhMove(evt); evt.preventDefault(); }
+  function lhMove(evt) { if (!lhDrag) return; const y = evt.touches ? evt.touches[0].clientY : evt.clientY; lhRender(lhYToPos(y), false); evt.preventDefault(); }
+  function lhEnd() { if (!lhDrag) return; lhDrag = false; lhMarker.classList.remove('grabbing'); }
 
-  function startDrag(evt) {
-    dragging = true;
-    ladderMarker.classList.add('grabbing');
-    moveDrag(evt);
-    evt.preventDefault();
-  }
-  function moveDrag(evt) {
-    if (!dragging) return;
-    let y = ladderEvtToY(evt);
-    y = Math.max(40, Math.min(320, y));
-    ladderMarker.setAttribute('cy', y);
-    const pos = ladderYToPos(y);
-    applyPosition(pos, { syncSlider: true });
-    evt.preventDefault();
-  }
-  function endDrag() {
-    if (dragging) {
-      dragging = false;
-      ladderMarker.classList.remove('grabbing');
-    }
-  }
+  lhMarker.addEventListener('mousedown', lhStart);
+  lhMarker.addEventListener('touchstart', lhStart, { passive: false });
+  lhStage.addEventListener('mousedown', e => { if (!e.target.classList.contains('lh-dot')) lhStart(e); });
+  lhStage.addEventListener('touchstart', e => { if (!e.target.classList.contains('lh-dot')) lhStart(e); }, { passive: false });
+  document.addEventListener('mousemove', lhMove);
+  document.addEventListener('touchmove', lhMove, { passive: false });
+  document.addEventListener('mouseup', lhEnd);
+  document.addEventListener('touchend', lhEnd);
+  document.addEventListener('touchcancel', lhEnd);
 
-  ladderMarker.addEventListener('mousedown', startDrag);
-  ladderMarker.addEventListener('touchstart', startDrag, { passive: false });
-  ladderSvg.addEventListener('mousedown', e => {
-    if (e.target === ladderMarker) return;
-    startDrag(e);
-  });
-  ladderSvg.addEventListener('touchstart', e => {
-    if (e.target === ladderMarker) return;
-    startDrag(e);
-  }, { passive: false });
-  document.addEventListener('mousemove', moveDrag);
-  document.addEventListener('touchmove', moveDrag, { passive: false });
-  document.addEventListener('mouseup', endDrag);
-  document.addEventListener('touchend', endDrag);
-  document.addEventListener('touchcancel', endDrag);
+  // tap a card to send the marker there
+  document.querySelectorAll('.rung-card').forEach(c => c.addEventListener('click', e => {
+    if (e.target.tagName === 'TEXTAREA') return;
+    const r = c.dataset.rung;
+    lhRender(r === 'ventral' ? 90 : r === 'dorsal' ? 10 : 50, true);
+  }));
 
   // ladder textareas
   document.querySelectorAll('.rung-card textarea[data-rung]').forEach(ta => {
@@ -2232,7 +2167,8 @@
 
   // restore slider position
   slider.value = String(state.sliderPos);
-  applyPosition(state.sliderPos, { syncLadder: true });
+  applyPosition(state.sliderPos);
+  lhRender(state.ladder.lhpos != null ? state.ladder.lhpos : 90, true);
 
 })();
 </script>

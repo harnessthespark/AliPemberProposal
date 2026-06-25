@@ -3,3 +3,17 @@
 .vscode/
 *.swp
 node_modules/
+
+# Design source files & working sketches — kept locally, not deployed
+*.psd
+*.bak
+*-prototype.html
+lighthouse-final.html
+# Unreferenced working raster/video exports (only the deployed assets are tracked)
+boat.png
+boat-cutout.png
+seascape-bands.png
+card-lighthouse.jpg
+lh-calm.mp4
+lh-fog.mp4
+lh-rough.mp4
