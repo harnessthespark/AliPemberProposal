@@ -414,6 +414,8 @@
   .anchor-input:focus { outline: none; border-color: var(--sail); }
   .anchor-input::placeholder { color: var(--ink-faint); opacity: 0.8; }
   .anchor-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .anchor-hint { font-size: 0.82rem; color: var(--ink-faint); margin: 0.7rem 0 0; line-height: 1.5; }
+  .anchor-hint strong { color: var(--ink-soft); font-weight: 600; }
 
   /* type selector */
   .anchor-type { display: flex; gap: 0.5rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
@@ -435,20 +437,19 @@
     padding: 0.15em 0.6em; margin-bottom: 0.3rem;
   }
 
-  /* the drop animation stage */
+  /* the drop animation stage — watercolour water matches the chosen state */
   .anchor-stage {
     position: relative; height: 150px; margin-top: 1.4rem;
     border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line);
-    background: linear-gradient(180deg, #EEF2F3 0%, #EAF0F2 37%, #C9D8DE 39%, #9FB5BF 100%);
+    background-color: #8FA9B3; background-size: cover; background-position: center 60%;
   }
-  .anchor-surface { position: absolute; left: 0; right: 0; top: 38%; height: 0; border-top: 1.5px solid rgba(255,255,255,0.55); }
   .anchor-drop-group { position: absolute; left: 50%; top: 0; transform: translate(-50%, -150px); display: flex; flex-direction: column; align-items: center; }
-  .anchor-chain { width: 2px; height: 52px; background: repeating-linear-gradient(var(--ink-faint) 0 4px, transparent 4px 9px); opacity: 0.65; }
-  .anchor-icon { width: 34px; height: auto; color: var(--sail); margin-top: -2px; filter: drop-shadow(0 1px 2px rgba(31,51,84,0.25)); }
-  .anchor-ripple { position: absolute; left: 50%; top: 38%; width: 34px; height: 11px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.85); transform: translate(-50%,-50%) scale(0.3); opacity: 0; }
-  .anchor-caption { position: absolute; left: 0; right: 0; bottom: 9px; margin: 0; padding: 0 1rem; text-align: center; font-family: var(--serif); font-size: 0.98rem; color: var(--hypo-deep); opacity: 0; }
+  .anchor-chain { width: 2px; height: 52px; background: repeating-linear-gradient(rgba(255,255,255,0.85) 0 4px, transparent 4px 9px); }
+  .anchor-icon { width: 34px; height: auto; color: #F4EEE2; margin-top: -2px; filter: drop-shadow(0 2px 3px rgba(18,28,38,0.55)); }
+  .anchor-ripple { position: absolute; left: 50%; top: 44%; width: 34px; height: 11px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.9); transform: translate(-50%,-50%) scale(0.3); opacity: 0; }
+  .anchor-caption { position: absolute; left: 0; right: 0; bottom: 9px; margin: 0; padding: 0 1rem; text-align: center; font-family: var(--serif); font-size: 0.98rem; color: #fff; text-shadow: 0 1px 4px rgba(16,26,36,0.9); opacity: 0; }
   .anchor-caption .c-cue { font-style: italic; }
-  .anchor-caption .c-calm { display: block; font-family: var(--sans); font-style: normal; font-size: 0.78rem; color: #3a566f; margin-top: 0.15rem; }
+  .anchor-caption .c-calm { display: block; font-family: var(--sans); font-style: normal; font-size: 0.78rem; color: rgba(255,255,255,0.92); margin-top: 0.15rem; text-shadow: 0 1px 4px rgba(16,26,36,0.9); }
 
   .anchor-stage.dropping .anchor-drop-group { animation: anchorDrop 1.5s cubic-bezier(.34,1.25,.6,1) forwards; }
   .anchor-stage.dropping .anchor-ripple { animation: anchorRipple 1.5s ease-out forwards; }
@@ -552,7 +553,7 @@
   <div class="anchors-head">
     <div class="kicker">dropping anchor</div>
     <h2>Your <span class="swash">anchors</span></h2>
-    <p class="anchors-lede">Anchors are little things — an <em>object</em>, a <em>picture</em>, a <em>smell</em> — that help connect you back to a calmer, more settled state when the seas are rough, or flat and stagnant. The idea comes from hypnotherapy: practise that settled feeling, and tie it to your anchor, so you can find it again. <em>Lay it in the calm; trust it in the blow.</em></p>
+    <p class="anchors-lede">Anchors are little things — an <em>object</em>, a <em>picture</em>, a <em>smell</em> — that help connect you back to a calmer, more settled state when the seas are rough, or flat and stagnant. <em>Lay it in the calm; trust it in the blow.</em></p>
   </div>
 
   <ul class="anchor-list" id="anchorList"></ul>
@@ -572,9 +573,9 @@
     <button type="button" class="btn btn-ghost" id="anchorLayBtn">Lay this anchor <span class="arr">⚓</span></button>
     <button type="button" class="btn btn-ghost" id="anchorDropBtn">Drop an anchor <span class="arr">↓</span></button>
   </div>
+  <p class="anchor-hint"><strong>Lay</strong> an anchor on a calm day to keep it in your collection. <strong>Drop</strong> one when the water turns, to reach for it in the moment.</p>
 
   <div class="anchor-stage" id="anchorStage">
-    <div class="anchor-surface"></div>
     <span class="anchor-ripple"></span>
     <div class="anchor-drop-group">
       <span class="anchor-chain"></span>
@@ -684,6 +685,7 @@
     renderGrid(zone);
     renderSaved();
     els.nudge.classList.remove('visible');
+    setAnchorWater(zone);
   }
 
   function makeStrat(id, label, custom, zone, ci) {
@@ -842,6 +844,11 @@
     });
   }
 
+  const ANCHOR_WATER = { rough: 'card-rough.jpg', still: 'card-fog.jpg' };
+  function setAnchorWater(zone) {
+    anchorEls.stage.style.backgroundImage = "url('" + (ANCHOR_WATER[zone] || 'card-calm.jpg') + "')";
+  }
+
   function captionFor(prefix, a) {
     return prefix + (a.cue ? ' <span class="c-cue">' + escapeHtml(a.cue) + '</span>' : '') + (a.calm ? '<span class="c-calm">' + escapeHtml(a.calm) + '</span>' : '');
   }
@@ -876,6 +883,7 @@
   });
 
   renderAnchors();
+  setAnchorWater(state.zone);
 
   // restore last zone
   if (state.zone) pickZone(state.zone);
