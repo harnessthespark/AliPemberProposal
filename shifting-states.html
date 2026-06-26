@@ -126,7 +126,7 @@
     padding: 0 clamp(1.2rem, 5vw, 3rem) clamp(2rem, 4vw, 3rem);
   }
   .picker {
-    display: grid; grid-template-columns: 1fr 1fr;
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
     gap: clamp(1rem, 2vw, 1.6rem);
     opacity: 0; transform: translateY(16px);
     animation: rise 900ms 0.4s cubic-bezier(.2,.7,.2,1) forwards;
@@ -420,6 +420,13 @@
   .anchor-hint { font-size: 0.82rem; color: var(--ink-faint); margin: 0.7rem 0 0; line-height: 1.5; }
   .anchor-hint strong { color: var(--ink-soft); font-weight: 600; }
 
+  /* calm state has no shift-strategies — it's the steady place you lay anchors */
+  .strategies[data-zone="calm"] .strat-actions,
+  .strategies[data-zone="calm"] .nudge,
+  .strategies[data-zone="calm"] .strat-grid,
+  .strategies[data-zone="calm"] .strat-add,
+  .strategies[data-zone="calm"] .saved-tray { display: none; }
+
   /* type selector */
   .anchor-type { display: flex; gap: 0.5rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
   .anchor-type-btn {
@@ -503,6 +510,15 @@
       <div class="pick-eyebrow">when you need to slow down</div>
       <h2>The waters are <span class="swash">rough</span></h2>
       <p class="pick-tag">heart racing, thoughts loud, body braced</p>
+    </button>
+
+    <button class="pick-card" data-state="calm" type="button" aria-pressed="false">
+      <div class="pick-vis" aria-hidden="true">
+        <img src="card-calm.jpg" alt="">
+      </div>
+      <div class="pick-eyebrow">when you're steady</div>
+      <h2>In your <span class="swash">window</span></h2>
+      <p class="pick-tag">settled, present, here</p>
     </button>
 
     <button class="pick-card" data-state="still" type="button" aria-pressed="false">
@@ -647,6 +663,10 @@
       title: 'When the fog has <em class="swash">descended</em>',
       lede:  'Small ways back. Wake one sense at a time, no rush — a small movement, a small flavour, a small voice nearby.',
     },
+    calm: {
+      title: 'In your <em class="swash">window</em>',
+      lede:  'Steady, for now — settled enough to feel, think and rest. Nothing to shift here. This is the calm water where you lay your anchors and notice what keeps you held. Lay one below.',
+    },
   };
 
   const STORE_KEY = 'ali_shifting_v1';
@@ -684,10 +704,14 @@
     els.title.innerHTML = COPY[zone].title;
     els.lede.textContent = COPY[zone].lede;
 
-    renderGrid(zone);
-    renderSaved();
+    if (zone === 'calm') {
+      els.grid.innerHTML = '';
+    } else {
+      renderGrid(zone);
+      renderSaved();
+    }
     els.nudge.classList.remove('visible');
-    setAnchorWater(zone);
+    setAnchorWater();
   }
 
   function makeStrat(id, label, custom, zone, ci) {
@@ -848,9 +872,9 @@
     });
   }
 
-  const ANCHOR_WATER = { rough: 'card-rough.jpg', still: 'card-fog.jpg' };
-  function setAnchorWater(zone) {
-    anchorEls.stage.style.backgroundImage = "url('" + (ANCHOR_WATER[zone] || 'card-calm.jpg') + "')";
+  // anchors are always laid in calm water — you can't drop anchor in a storm
+  function setAnchorWater() {
+    anchorEls.stage.style.backgroundImage = "url('card-calm.jpg')";
   }
 
   function captionFor(prefix, a) {
@@ -881,7 +905,7 @@
   }));
 
   renderAnchors();
-  setAnchorWater(state.zone);
+  setAnchorWater();
 
   // restore last zone
   if (state.zone) pickZone(state.zone);
