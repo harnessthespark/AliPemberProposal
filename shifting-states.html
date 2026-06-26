@@ -391,6 +391,41 @@
     *, *::before, *::after { animation: none !important; transition: none !important; }
     .hero, .picker, .strategies { opacity: 1; transform: none; }
   }
+
+  /* ---------- ANCHORS ---------- */
+  .anchors-section { max-width: 760px; margin: 0 auto; padding: 2.6rem clamp(1.1rem, 4vw, 2rem) 1rem; }
+  .anchors-head { text-align: center; margin-bottom: 1.6rem; }
+  .anchors-head h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.7rem, 4vw, 2.4rem); margin: 0.2em 0 0; }
+  .anchors-lede { color: var(--ink-soft); max-width: 48ch; margin: 0.7rem auto 0; line-height: 1.55; }
+  .anchors-lede em { font-style: italic; color: var(--sail); }
+
+  .anchor-list { list-style: none; padding: 0; margin: 0 0 1.2rem; display: grid; gap: 0.6rem; }
+  .anchor-item { display: flex; align-items: flex-start; gap: 0.8em; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: 0.85rem 1rem; }
+  .anchor-glyph { color: var(--sail); font-size: 1.15rem; line-height: 1.3; flex: 0 0 auto; }
+  .anchor-text { flex: 1; }
+  .anchor-cue { font-family: var(--serif); font-size: 1.05rem; color: var(--ink); }
+  .anchor-calm { display: block; font-size: 0.9rem; color: var(--ink-soft); margin-top: 0.15rem; font-style: italic; }
+  .anchor-del { appearance: none; background: none; border: none; color: var(--ink-faint); cursor: pointer; font-size: 1.2rem; line-height: 1; opacity: 0.5; flex: 0 0 auto; }
+  .anchor-del:hover { opacity: 1; color: var(--hyper); }
+  .anchor-empty { text-align: center; color: var(--ink-faint); font-style: italic; font-family: var(--serif); margin: 0 0 1.2rem; }
+
+  .anchor-fields { display: grid; gap: 0.5rem; margin-bottom: 0.8rem; }
+  .anchor-input { width: 100%; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--paper); font: inherit; padding: 0.7rem 0.9rem; color: var(--ink); }
+  .anchor-input:focus { outline: none; border-color: var(--sail); }
+  .anchor-input::placeholder { color: var(--ink-faint); opacity: 0.8; }
+  .anchor-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+
+  .anchor-drop {
+    margin-top: 1.4rem; padding: 1.2rem 1.4rem; border-radius: var(--r-md);
+    background: var(--hypo-soft); border: 1px dashed var(--hypo-tint);
+    display: none; align-items: flex-start; gap: 1rem;
+    animation: nudgeIn 700ms cubic-bezier(.2,.7,.2,1);
+  }
+  .anchor-drop.visible { display: flex; }
+  .anchor-drop .drop-mark { color: var(--sail); font-size: 1.3rem; line-height: 1; margin-top: 0.05em; }
+  .anchor-drop .drop-body { font-family: var(--serif); color: var(--ink); font-size: 1.05rem; line-height: 1.5; }
+  .anchor-drop .drop-body .cue { font-style: italic; }
+  .anchor-drop .drop-body small { display: block; font-family: var(--sans); font-style: normal; color: var(--ink-soft); font-size: 0.82rem; margin-top: 0.3rem; }
 </style>
 </head>
 <body>
@@ -464,6 +499,31 @@
   </div>
 </section>
 
+<section class="anchors-section" aria-label="Your anchors">
+  <div class="anchors-head">
+    <div class="kicker">dropping anchor</div>
+    <h2>Your <span class="swash">anchors</span></h2>
+    <p class="anchors-lede">An anchor is a calm you've practised, tied to something you can see, touch, hear or smell — so you can find it again when the water's rough. <em>Lay it in the calm; trust it in the blow.</em></p>
+  </div>
+
+  <ul class="anchor-list" id="anchorList"></ul>
+  <p class="anchor-empty" id="anchorEmpty">No anchors laid yet. Add one below — best done on a calm day.</p>
+
+  <div class="anchor-fields">
+    <input id="anchorCue" class="anchor-input" placeholder="The cue — a smooth pebble, a hand on your chest, a particular smell…" aria-label="The anchor's cue">
+    <input id="anchorCalm" class="anchor-input" placeholder="The calm it holds — a memory, a place, a feeling to return to…" aria-label="The calm this anchor holds">
+  </div>
+  <div class="anchor-actions">
+    <button type="button" class="btn btn-ghost" id="anchorLayBtn">Lay this anchor <span class="arr">⚓</span></button>
+    <button type="button" class="btn btn-ghost" id="anchorDropBtn">Drop an anchor <span class="arr">↓</span></button>
+  </div>
+
+  <div class="anchor-drop" id="anchorDrop" aria-live="polite">
+    <span class="drop-mark">⚓</span>
+    <div class="drop-body" id="anchorDropBody"></div>
+  </div>
+</section>
+
 <footer>
   <span class="mark">~</span>
   <p>Made with care, for noticing. · <a href="privacy.html" style="color:#8A7F73;">Privacy</a></p>
@@ -522,6 +582,7 @@
   const STORE_KEY = 'ali_shifting_v1';
   let state = JSON.parse(localStorage.getItem(STORE_KEY) || '{"tried":{},"saved":{},"zone":null}');
   state.custom = state.custom || { rough: [], still: [] };
+  state.anchors = state.anchors || [];
   function save() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
 
   const els = {
@@ -663,6 +724,69 @@
     }
     els.addInput.value = '';
   });
+
+  // -------- ANCHORS --------
+  function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+  const anchorEls = {
+    list: document.getElementById('anchorList'),
+    empty: document.getElementById('anchorEmpty'),
+    cue: document.getElementById('anchorCue'),
+    calm: document.getElementById('anchorCalm'),
+    lay: document.getElementById('anchorLayBtn'),
+    drop: document.getElementById('anchorDropBtn'),
+    dropBox: document.getElementById('anchorDrop'),
+    dropBody: document.getElementById('anchorDropBody'),
+  };
+
+  function renderAnchors() {
+    anchorEls.list.innerHTML = '';
+    if (!state.anchors.length) {
+      anchorEls.empty.style.display = '';
+      return;
+    }
+    anchorEls.empty.style.display = 'none';
+    state.anchors.forEach((a, i) => {
+      const li = document.createElement('li');
+      li.className = 'anchor-item';
+      li.innerHTML = '<span class="anchor-glyph" aria-hidden="true">⚓</span><div class="anchor-text"><span class="anchor-cue"></span><span class="anchor-calm"></span></div><button class="anchor-del" type="button" aria-label="Remove this anchor">×</button>';
+      li.querySelector('.anchor-cue').textContent = a.cue || '—';
+      li.querySelector('.anchor-calm').textContent = a.calm || '';
+      li.querySelector('.anchor-del').addEventListener('click', () => { state.anchors.splice(i, 1); save(); renderAnchors(); });
+      anchorEls.list.appendChild(li);
+    });
+  }
+
+  function layAnchor() {
+    const cue = anchorEls.cue.value.trim();
+    const calm = anchorEls.calm.value.trim();
+    if (!cue && !calm) return;
+    state.anchors.push({ cue: cue, calm: calm });
+    save();
+    anchorEls.cue.value = '';
+    anchorEls.calm.value = '';
+    renderAnchors();
+  }
+  anchorEls.lay.addEventListener('click', layAnchor);
+  [anchorEls.cue, anchorEls.calm].forEach(inp => inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); layAnchor(); }
+  }));
+
+  anchorEls.drop.addEventListener('click', () => {
+    if (!state.anchors.length) {
+      anchorEls.dropBody.innerHTML = '<span class="cue">No anchors laid yet.</span><small>Lay one on a calm day, so it\'s here when the water turns.</small>';
+    } else {
+      const a = state.anchors[Math.floor(Math.random() * state.anchors.length)];
+      const cueHtml = a.cue ? ('Reach for <span class="cue">' + escapeHtml(a.cue) + '</span>.') : 'Reach for your anchor.';
+      const calmHtml = a.calm ? ('<small>' + escapeHtml(a.calm) + '</small>') : '';
+      anchorEls.dropBody.innerHTML = cueHtml + calmHtml;
+    }
+    anchorEls.dropBox.classList.remove('visible');
+    void anchorEls.dropBox.offsetWidth;
+    anchorEls.dropBox.classList.add('visible');
+  });
+
+  renderAnchors();
 
   // restore last zone
   if (state.zone) pickZone(state.zone);
