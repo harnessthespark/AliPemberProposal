@@ -399,13 +399,16 @@
   .anchors-lede { color: var(--ink-soft); max-width: 48ch; margin: 0.7rem auto 0; line-height: 1.55; }
   .anchors-lede em { font-style: italic; color: var(--sail); }
 
-  .anchor-list { list-style: none; padding: 0; margin: 0 0 1.2rem; display: grid; gap: 0.6rem; }
-  .anchor-item { display: flex; align-items: flex-start; gap: 0.8em; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: 0.85rem 1rem; }
+  .anchor-list { list-style: none; padding: 0; margin: 0 0 0.7rem; display: grid; gap: 0.6rem; }
+  .anchor-item { display: flex; align-items: stretch; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); transition: border-color 180ms, box-shadow 180ms; }
+  .anchor-item:hover { border-color: var(--sail); box-shadow: var(--shadow-soft); }
+  .anchor-main { flex: 1; display: flex; align-items: flex-start; gap: 0.8em; background: none; border: none; font: inherit; color: inherit; text-align: left; cursor: pointer; padding: 0.85rem 1rem; border-radius: var(--r-md); }
+  .anchor-main:focus-visible { outline: 2px solid var(--sail); outline-offset: -2px; }
   .anchor-glyph { color: var(--sail); font-size: 1.15rem; line-height: 1.3; flex: 0 0 auto; }
   .anchor-text { flex: 1; }
   .anchor-cue { font-family: var(--serif); font-size: 1.05rem; color: var(--ink); }
   .anchor-calm { display: block; font-size: 0.9rem; color: var(--ink-soft); margin-top: 0.15rem; font-style: italic; }
-  .anchor-del { appearance: none; background: none; border: none; color: var(--ink-faint); cursor: pointer; font-size: 1.2rem; line-height: 1; opacity: 0.5; flex: 0 0 auto; }
+  .anchor-del { appearance: none; background: none; border: none; color: var(--ink-faint); cursor: pointer; font-size: 1.2rem; line-height: 1; opacity: 0.5; flex: 0 0 auto; padding: 0 0.9rem; display: flex; align-items: center; }
   .anchor-del:hover { opacity: 1; color: var(--hyper); }
   .anchor-empty { text-align: center; color: var(--ink-faint); font-style: italic; font-family: var(--serif); margin: 0 0 1.2rem; }
 
@@ -557,7 +560,8 @@
   </div>
 
   <ul class="anchor-list" id="anchorList"></ul>
-  <p class="anchor-empty" id="anchorEmpty">No anchors laid yet. Add one below — best done on a calm day.</p>
+  <p class="anchor-empty" id="anchorEmpty">No anchors laid yet. Lay one below — best done on a calm day.</p>
+  <p class="anchor-hint" id="anchorTapHint" hidden>Tap an anchor to <strong>drop</strong> it — reach for its calm when the water turns.</p>
 
   <div class="anchor-type" role="group" aria-label="Type of anchor">
     <button type="button" class="anchor-type-btn" data-type="object" aria-pressed="true"><span class="at-glyph">⬤</span> Object</button>
@@ -571,9 +575,7 @@
   </div>
   <div class="anchor-actions">
     <button type="button" class="btn btn-ghost" id="anchorLayBtn">Lay this anchor <span class="arr">⚓</span></button>
-    <button type="button" class="btn btn-ghost" id="anchorDropBtn">Drop an anchor <span class="arr">↓</span></button>
   </div>
-  <p class="anchor-hint"><strong>Lay</strong> an anchor on a calm day to keep it in your collection. <strong>Drop</strong> one when the water turns, to reach for it in the moment.</p>
 
   <div class="anchor-stage" id="anchorStage">
     <span class="anchor-ripple"></span>
@@ -811,9 +813,9 @@
     cue: document.getElementById('anchorCue'),
     calm: document.getElementById('anchorCalm'),
     lay: document.getElementById('anchorLayBtn'),
-    drop: document.getElementById('anchorDropBtn'),
     stage: document.getElementById('anchorStage'),
     caption: document.getElementById('anchorCaption'),
+    tapHint: document.getElementById('anchorTapHint'),
     typeBtns: document.querySelectorAll('.anchor-type-btn'),
   };
 
@@ -826,19 +828,21 @@
 
   function renderAnchors() {
     anchorEls.list.innerHTML = '';
-    if (!state.anchors.length) {
-      anchorEls.empty.style.display = '';
-      return;
-    }
-    anchorEls.empty.style.display = 'none';
+    const has = state.anchors.length > 0;
+    anchorEls.empty.style.display = has ? 'none' : '';
+    if (anchorEls.tapHint) anchorEls.tapHint.hidden = !has;
+    if (!has) return;
     state.anchors.forEach((a, i) => {
       const li = document.createElement('li');
       li.className = 'anchor-item';
-      li.innerHTML = '<span class="anchor-glyph" aria-hidden="true">⚓</span><div class="anchor-text"><span class="anchor-chip"></span><span class="anchor-cue"></span><span class="anchor-calm"></span></div><button class="anchor-del" type="button" aria-label="Remove this anchor">×</button>';
+      li.innerHTML = '<button class="anchor-main" type="button"><span class="anchor-glyph" aria-hidden="true">⚓</span><span class="anchor-text"><span class="anchor-chip"></span><span class="anchor-cue"></span><span class="anchor-calm"></span></span></button><button class="anchor-del" type="button" aria-label="Remove this anchor">×</button>';
       const chip = li.querySelector('.anchor-chip');
       if (a.type && TYPE_LABEL[a.type]) { chip.textContent = TYPE_LABEL[a.type]; } else { chip.remove(); }
       li.querySelector('.anchor-cue').textContent = a.cue || '—';
       li.querySelector('.anchor-calm').textContent = a.calm || '';
+      const main = li.querySelector('.anchor-main');
+      main.setAttribute('title', 'Drop this anchor — reach for it');
+      main.addEventListener('click', () => playDrop(captionFor('Reach for', a)));
       li.querySelector('.anchor-del').addEventListener('click', () => { state.anchors.splice(i, 1); save(); renderAnchors(); });
       anchorEls.list.appendChild(li);
     });
@@ -875,12 +879,6 @@
   [anchorEls.cue, anchorEls.calm].forEach(inp => inp.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); layAnchor(); }
   }));
-
-  anchorEls.drop.addEventListener('click', () => {
-    if (!state.anchors.length) { playDrop('Lay an anchor below first — best done on a calm day.'); return; }
-    const a = state.anchors[Math.floor(Math.random() * state.anchors.length)];
-    playDrop(captionFor('Reach for', a));
-  });
 
   renderAnchors();
   setAnchorWater(state.zone);
