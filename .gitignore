@@ -4,6 +4,9 @@
 *.swp
 node_modules/
 
+# Internal planning — never deploy (Ali's feedback + pricing)
+ALI_REQUESTS.md
+
 # Design source files & working sketches — kept locally, not deployed
 *.psd
 *.bak
