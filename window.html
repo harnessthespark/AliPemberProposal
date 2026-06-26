@@ -169,6 +169,21 @@
     object-fit: cover;
   }
 
+  /* now-panel layout: stacked on mobile, boat + barometer side-by-side on desktop
+     so you can see the boat move as you slide (Ali — desktop side-by-side) */
+  .now-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+    align-items: center;
+  }
+  @media (min-width: 780px) {
+    .now-grid {
+      grid-template-columns: 1.45fr 1fr;
+      gap: 2rem;
+    }
+  }
+
   /* the boat is the position marker — travels between zones */
   .boat-layer {
     position: absolute;
