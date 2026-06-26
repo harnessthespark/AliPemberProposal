@@ -415,17 +415,66 @@
   .anchor-input::placeholder { color: var(--ink-faint); opacity: 0.8; }
   .anchor-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
 
-  .anchor-drop {
-    margin-top: 1.4rem; padding: 1.2rem 1.4rem; border-radius: var(--r-md);
-    background: var(--hypo-soft); border: 1px dashed var(--hypo-tint);
-    display: none; align-items: flex-start; gap: 1rem;
-    animation: nudgeIn 700ms cubic-bezier(.2,.7,.2,1);
+  /* type selector */
+  .anchor-type { display: flex; gap: 0.5rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
+  .anchor-type-btn {
+    appearance: none; border: 1px solid var(--line); background: var(--paper);
+    border-radius: 999px; font: inherit; font-size: 0.86rem; cursor: pointer;
+    padding: 0.45em 0.95em; color: var(--ink-soft); transition: all 180ms;
+    display: inline-flex; align-items: center; gap: 0.45em;
   }
-  .anchor-drop.visible { display: flex; }
-  .anchor-drop .drop-mark { color: var(--sail); font-size: 1.3rem; line-height: 1; margin-top: 0.05em; }
-  .anchor-drop .drop-body { font-family: var(--serif); color: var(--ink); font-size: 1.05rem; line-height: 1.5; }
-  .anchor-drop .drop-body .cue { font-style: italic; }
-  .anchor-drop .drop-body small { display: block; font-family: var(--sans); font-style: normal; color: var(--ink-soft); font-size: 0.82rem; margin-top: 0.3rem; }
+  .anchor-type-btn .at-glyph { color: var(--sail); font-size: 0.9em; }
+  .anchor-type-btn[aria-pressed="true"] { background: var(--sail); color: var(--paper); border-color: var(--sail); }
+  .anchor-type-btn[aria-pressed="true"] .at-glyph { color: var(--paper); }
+
+  /* type chip on a laid anchor */
+  .anchor-chip {
+    display: inline-block; font-family: var(--sans); font-size: 0.64rem;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--sail);
+    border: 1px solid var(--hypo-tint); border-radius: 999px;
+    padding: 0.15em 0.6em; margin-bottom: 0.3rem;
+  }
+
+  /* the drop animation stage */
+  .anchor-stage {
+    position: relative; height: 150px; margin-top: 1.4rem;
+    border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line);
+    background: linear-gradient(180deg, #EEF2F3 0%, #EAF0F2 37%, #C9D8DE 39%, #9FB5BF 100%);
+  }
+  .anchor-surface { position: absolute; left: 0; right: 0; top: 38%; height: 0; border-top: 1.5px solid rgba(255,255,255,0.55); }
+  .anchor-drop-group { position: absolute; left: 50%; top: 0; transform: translate(-50%, -150px); display: flex; flex-direction: column; align-items: center; }
+  .anchor-chain { width: 2px; height: 52px; background: repeating-linear-gradient(var(--ink-faint) 0 4px, transparent 4px 9px); opacity: 0.65; }
+  .anchor-icon { width: 34px; height: auto; color: var(--sail); margin-top: -2px; filter: drop-shadow(0 1px 2px rgba(31,51,84,0.25)); }
+  .anchor-ripple { position: absolute; left: 50%; top: 38%; width: 34px; height: 11px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.85); transform: translate(-50%,-50%) scale(0.3); opacity: 0; }
+  .anchor-caption { position: absolute; left: 0; right: 0; bottom: 9px; margin: 0; padding: 0 1rem; text-align: center; font-family: var(--serif); font-size: 0.98rem; color: var(--hypo-deep); opacity: 0; }
+  .anchor-caption .c-cue { font-style: italic; }
+  .anchor-caption .c-calm { display: block; font-family: var(--sans); font-style: normal; font-size: 0.78rem; color: #3a566f; margin-top: 0.15rem; }
+
+  .anchor-stage.dropping .anchor-drop-group { animation: anchorDrop 1.5s cubic-bezier(.34,1.25,.6,1) forwards; }
+  .anchor-stage.dropping .anchor-ripple { animation: anchorRipple 1.5s ease-out forwards; }
+  .anchor-stage.dropping .anchor-caption { animation: anchorCue 1.5s ease forwards; }
+
+  @keyframes anchorDrop {
+    0%   { transform: translate(-50%, -150px); }
+    62%  { transform: translate(-50%, 30px); }
+    78%  { transform: translate(-50%, 14px); }
+    100% { transform: translate(-50%, 22px); }
+  }
+  @keyframes anchorRipple {
+    0%, 52% { opacity: 0; transform: translate(-50%,-50%) scale(0.3); }
+    60% { opacity: 0.85; }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(2.4); }
+  }
+  @keyframes anchorCue {
+    0%, 56% { opacity: 0; transform: translateY(6px); }
+    74% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .anchor-stage.dropping .anchor-drop-group { animation: none; transform: translate(-50%, 22px); }
+    .anchor-stage.dropping .anchor-ripple { animation: none; }
+    .anchor-stage.dropping .anchor-caption { animation: none; opacity: 1; }
+  }
 </style>
 </head>
 <body>
@@ -503,24 +552,42 @@
   <div class="anchors-head">
     <div class="kicker">dropping anchor</div>
     <h2>Your <span class="swash">anchors</span></h2>
-    <p class="anchors-lede">An anchor is a calm you've practised, tied to something you can see, touch, hear or smell — so you can find it again when the water's rough. <em>Lay it in the calm; trust it in the blow.</em></p>
+    <p class="anchors-lede">Anchors are little things — an <em>object</em>, a <em>picture</em>, a <em>smell</em> — that help connect you back to a calmer, more settled state when the seas are rough, or flat and stagnant. The idea comes from hypnotherapy: practise that settled feeling, and tie it to your anchor, so you can find it again. <em>Lay it in the calm; trust it in the blow.</em></p>
   </div>
 
   <ul class="anchor-list" id="anchorList"></ul>
   <p class="anchor-empty" id="anchorEmpty">No anchors laid yet. Add one below — best done on a calm day.</p>
 
+  <div class="anchor-type" role="group" aria-label="Type of anchor">
+    <button type="button" class="anchor-type-btn" data-type="object" aria-pressed="true"><span class="at-glyph">⬤</span> Object</button>
+    <button type="button" class="anchor-type-btn" data-type="picture" aria-pressed="false"><span class="at-glyph">▣</span> Picture</button>
+    <button type="button" class="anchor-type-btn" data-type="smell" aria-pressed="false"><span class="at-glyph">❋</span> Smell</button>
+  </div>
+
   <div class="anchor-fields">
-    <input id="anchorCue" class="anchor-input" placeholder="The cue — a smooth pebble, a hand on your chest, a particular smell…" aria-label="The anchor's cue">
-    <input id="anchorCalm" class="anchor-input" placeholder="The calm it holds — a memory, a place, a feeling to return to…" aria-label="The calm this anchor holds">
+    <input id="anchorCue" class="anchor-input" placeholder="e.g. a smooth grey pebble, a ring you twist…" aria-label="What the anchor is">
+    <input id="anchorCalm" class="anchor-input" placeholder="The calm it holds — the settled feeling you've practised with it…" aria-label="The calm this anchor holds">
   </div>
   <div class="anchor-actions">
     <button type="button" class="btn btn-ghost" id="anchorLayBtn">Lay this anchor <span class="arr">⚓</span></button>
     <button type="button" class="btn btn-ghost" id="anchorDropBtn">Drop an anchor <span class="arr">↓</span></button>
   </div>
 
-  <div class="anchor-drop" id="anchorDrop" aria-live="polite">
-    <span class="drop-mark">⚓</span>
-    <div class="drop-body" id="anchorDropBody"></div>
+  <div class="anchor-stage" id="anchorStage">
+    <div class="anchor-surface"></div>
+    <span class="anchor-ripple"></span>
+    <div class="anchor-drop-group">
+      <span class="anchor-chain"></span>
+      <svg class="anchor-icon" viewBox="0 0 44 60" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="22" cy="8" r="5"/>
+        <line x1="22" y1="13" x2="22" y2="49"/>
+        <line x1="12" y1="22" x2="32" y2="22"/>
+        <path d="M9 38 Q9 52 22 52 Q35 52 35 38"/>
+        <path d="M4 39 L11 37 L10 45 Z" fill="currentColor" stroke="none"/>
+        <path d="M40 39 L33 37 L34 45 Z" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+    <p class="anchor-caption" id="anchorCaption" aria-live="polite"></p>
   </div>
 </section>
 
@@ -728,6 +795,14 @@
   // -------- ANCHORS --------
   function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
+  const TYPE_LABEL = { object: 'Object', picture: 'Picture', smell: 'Smell' };
+  const TYPE_PLACEHOLDER = {
+    object: 'e.g. a smooth grey pebble, a ring you twist…',
+    picture: 'e.g. a photo of someone you love…',
+    smell: 'e.g. an aromatherapy roller, fresh coffee…'
+  };
+  let anchorType = 'object';
+
   const anchorEls = {
     list: document.getElementById('anchorList'),
     empty: document.getElementById('anchorEmpty'),
@@ -735,9 +810,17 @@
     calm: document.getElementById('anchorCalm'),
     lay: document.getElementById('anchorLayBtn'),
     drop: document.getElementById('anchorDropBtn'),
-    dropBox: document.getElementById('anchorDrop'),
-    dropBody: document.getElementById('anchorDropBody'),
+    stage: document.getElementById('anchorStage'),
+    caption: document.getElementById('anchorCaption'),
+    typeBtns: document.querySelectorAll('.anchor-type-btn'),
   };
+
+  anchorEls.typeBtns.forEach(btn => btn.addEventListener('click', () => {
+    anchorType = btn.dataset.type;
+    anchorEls.typeBtns.forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+    anchorEls.cue.placeholder = TYPE_PLACEHOLDER[anchorType];
+    anchorEls.cue.focus();
+  }));
 
   function renderAnchors() {
     anchorEls.list.innerHTML = '';
@@ -749,7 +832,9 @@
     state.anchors.forEach((a, i) => {
       const li = document.createElement('li');
       li.className = 'anchor-item';
-      li.innerHTML = '<span class="anchor-glyph" aria-hidden="true">⚓</span><div class="anchor-text"><span class="anchor-cue"></span><span class="anchor-calm"></span></div><button class="anchor-del" type="button" aria-label="Remove this anchor">×</button>';
+      li.innerHTML = '<span class="anchor-glyph" aria-hidden="true">⚓</span><div class="anchor-text"><span class="anchor-chip"></span><span class="anchor-cue"></span><span class="anchor-calm"></span></div><button class="anchor-del" type="button" aria-label="Remove this anchor">×</button>';
+      const chip = li.querySelector('.anchor-chip');
+      if (a.type && TYPE_LABEL[a.type]) { chip.textContent = TYPE_LABEL[a.type]; } else { chip.remove(); }
       li.querySelector('.anchor-cue').textContent = a.cue || '—';
       li.querySelector('.anchor-calm').textContent = a.calm || '';
       li.querySelector('.anchor-del').addEventListener('click', () => { state.anchors.splice(i, 1); save(); renderAnchors(); });
@@ -757,15 +842,27 @@
     });
   }
 
+  function captionFor(prefix, a) {
+    return prefix + (a.cue ? ' <span class="c-cue">' + escapeHtml(a.cue) + '</span>' : '') + (a.calm ? '<span class="c-calm">' + escapeHtml(a.calm) + '</span>' : '');
+  }
+  function playDrop(captionHtml) {
+    anchorEls.caption.innerHTML = captionHtml;
+    anchorEls.stage.classList.remove('dropping');
+    void anchorEls.stage.offsetWidth;
+    anchorEls.stage.classList.add('dropping');
+  }
+
   function layAnchor() {
     const cue = anchorEls.cue.value.trim();
     const calm = anchorEls.calm.value.trim();
     if (!cue && !calm) return;
-    state.anchors.push({ cue: cue, calm: calm });
+    const a = { type: anchorType, cue: cue, calm: calm };
+    state.anchors.push(a);
     save();
     anchorEls.cue.value = '';
     anchorEls.calm.value = '';
     renderAnchors();
+    playDrop(captionFor('Anchor laid —', a));
   }
   anchorEls.lay.addEventListener('click', layAnchor);
   [anchorEls.cue, anchorEls.calm].forEach(inp => inp.addEventListener('keydown', e => {
@@ -773,17 +870,9 @@
   }));
 
   anchorEls.drop.addEventListener('click', () => {
-    if (!state.anchors.length) {
-      anchorEls.dropBody.innerHTML = '<span class="cue">No anchors laid yet.</span><small>Lay one on a calm day, so it\'s here when the water turns.</small>';
-    } else {
-      const a = state.anchors[Math.floor(Math.random() * state.anchors.length)];
-      const cueHtml = a.cue ? ('Reach for <span class="cue">' + escapeHtml(a.cue) + '</span>.') : 'Reach for your anchor.';
-      const calmHtml = a.calm ? ('<small>' + escapeHtml(a.calm) + '</small>') : '';
-      anchorEls.dropBody.innerHTML = cueHtml + calmHtml;
-    }
-    anchorEls.dropBox.classList.remove('visible');
-    void anchorEls.dropBox.offsetWidth;
-    anchorEls.dropBox.classList.add('visible');
+    if (!state.anchors.length) { playDrop('Lay an anchor below first — best done on a calm day.'); return; }
+    const a = state.anchors[Math.floor(Math.random() * state.anchors.length)];
+    playDrop(captionFor('Reach for', a));
   });
 
   renderAnchors();
