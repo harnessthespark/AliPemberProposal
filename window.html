@@ -1822,7 +1822,7 @@
         <button class="btn btn-ghost" id="sendCoachBtn">Send to your coach</button>
       </div>
     </div>
-    <p class="log-hint" id="logHint">A snapshot to take to a session — opens in your email, you choose what to send and to whom.</p>
+    <p class="log-hint" id="logHint">A snapshot to take to a session — includes any moments, sails and lighthouse notes you've added. Opens in your email; you choose what to send and to whom.</p>
 
     <div id="logBody"></div>
   </section>
@@ -2290,25 +2290,59 @@
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
+  function hasAnyCapturedData() {
+    return state.log.length > 0
+      || state.window.widens.length > 0
+      || state.window.narrows.length > 0
+      || Boolean(state.ladder.ventral || state.ladder.symp || state.ladder.dorsal);
+  }
+
   function buildLogText() {
     const lines = [];
-    lines.push('YOUR WINDOW — A LOG OF MOMENTS');
+    lines.push('YOUR PORTHOLE — A SNAPSHOT');
     lines.push('Exported ' + new Date().toLocaleString());
     lines.push('—————————————————————');
-    state.log.forEach(entry => {
-      const { day, time } = fmtDate(entry.ts);
+    lines.push('');
+    lines.push('MOMENTS KEPT');
+    if (state.log.length) {
+      state.log.forEach(entry => {
+        const { day, time } = fmtDate(entry.ts);
+        lines.push('');
+        lines.push(`${day}, ${time}`);
+        lines.push(`Zone: ${ZONE_NAMES[entry.zone]}`);
+        lines.push(`  Body: ${entry.notes.body || '—'}`);
+        lines.push(`  Thoughts: ${entry.notes.thoughts || '—'}`);
+        lines.push(`  Behaviour: ${entry.notes.behaviour || '—'}`);
+      });
+    } else {
+      lines.push('Nothing kept yet.');
+    }
+
+    if (state.window.widens.length || state.window.narrows.length) {
       lines.push('');
-      lines.push(`${day}, ${time}`);
-      lines.push(`Zone: ${ZONE_NAMES[entry.zone]}`);
-      lines.push(`  Body: ${entry.notes.body || '—'}`);
-      lines.push(`  Thoughts: ${entry.notes.thoughts || '—'}`);
-      lines.push(`  Behaviour: ${entry.notes.behaviour || '—'}`);
-    });
+      lines.push('—————————————————————');
+      lines.push('MY SAILS');
+      if (state.window.widens.length) lines.push('What fills your sails: ' + state.window.widens.join(', '));
+      if (state.window.narrows.length) lines.push('What takes the wind out: ' + state.window.narrows.join(', '));
+    }
+
+    const ladderNotes = [
+      ['In the light', state.ladder.ventral],
+      ['Out in the storm', state.ladder.symp],
+      ['Lost in the fog', state.ladder.dorsal]
+    ].filter(([, text]) => text && text.trim());
+    if (ladderNotes.length) {
+      lines.push('');
+      lines.push('—————————————————————');
+      lines.push('THE LIGHTHOUSE');
+      ladderNotes.forEach(([label, text]) => lines.push(`${label}: ${text}`));
+    }
+
     return lines.join('\n');
   }
 
   exportBtn.addEventListener('click', () => {
-    if (!state.log.length) return;
+    if (!hasAnyCapturedData()) return;
     const blob = new Blob([buildLogText()], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -2322,8 +2356,8 @@
 
   const sendCoachBtn = document.getElementById('sendCoachBtn');
   sendCoachBtn.addEventListener('click', () => {
-    if (!state.log.length) {
-      alert('No moments kept yet — log a moment first, then send a snapshot.');
+    if (!hasAnyCapturedData()) {
+      alert('Nothing kept yet — log a moment, note what fills your sails, or add a lighthouse reflection first.');
       return;
     }
     const subject = encodeURIComponent('A snapshot from my Porthole log');
