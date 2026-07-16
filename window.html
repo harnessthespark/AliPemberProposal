@@ -989,154 +989,6 @@
     to   { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  /* ---------- panel: LADDER ---------- */
-  .ladder-wrap {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.6rem;
-  }
-  @media (min-width: 880px) {
-    .ladder-wrap { grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 2.4rem; align-items: start; }
-  }
-
-  .ladder-vis {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    padding: 2rem 1rem;
-    box-shadow: var(--shadow-soft);
-    position: sticky;
-    top: 80px;
-  }
-  @media (max-width: 879px) {
-    .ladder-vis { position: static; padding: 1.4rem 1rem; }
-  }
-
-  .ladder-svg {
-    width: 100%;
-    height: auto;
-    display: block;
-    user-select: none;
-    touch-action: none;
-  }
-
-  .rung-rope { stroke: var(--ink-soft); stroke-width: 2; stroke-linecap: round; opacity: 0.5; }
-  .rung-bar { stroke-width: 3; stroke-linecap: round; }
-  .rung-ventral { stroke: var(--green); }
-  .rung-symp { stroke: #B89150; }
-  .rung-dorsal { stroke: var(--hypo); }
-
-  .rung-label {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 12px;
-    fill: var(--ink-soft);
-  }
-
-  .ladder-marker {
-    fill: var(--ink);
-    stroke: var(--paper);
-    stroke-width: 3;
-    cursor: grab;
-    filter: drop-shadow(0 2px 6px rgba(42,36,32,0.25));
-    transition: cy 600ms cubic-bezier(.34,1.5,.64,1);
-  }
-  .ladder-marker.grabbing { cursor: grabbing; transition: none; }
-
-  .ladder-cards { display: grid; gap: 1.1rem; }
-
-  /* lighthouse vis */
-  .lh-vis { position: sticky; top: 80px; }
-  @media (max-width: 879px) { .lh-vis { position: static; } }
-  .lh-stage { position: relative; width: 100%; aspect-ratio: 1890/1417; border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-soft); border: 1px solid var(--line); background: var(--sand); user-select: none; touch-action: none; }
-  .lh-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-  .lh-track { position: absolute; left: 30%; top: 16%; height: 50%; width: 2px; background: rgba(42,36,32,.18); transform: translateX(-50%); }
-  .lh-marker { position: absolute; left: 30%; top: 18%; width: 24px; height: 24px; border-radius: 50%; transform: translate(-50%,-50%); background: var(--paper); border: 2px solid var(--ink); box-shadow: 0 2px 8px rgba(42,36,32,.25), inset 0 0 0 4px var(--paper); cursor: grab; z-index: 6; transition: top 280ms ease-out; }
-  .lh-marker.grabbing { cursor: grabbing; transition: none; }
-  .lh-dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; transform: translate(-50%,-50%); z-index: 5; cursor: help; border: 2px solid var(--paper); box-shadow: 0 1px 4px rgba(42,36,32,.3); }
-  .lh-dot[data-rung="ventral"] { background: var(--green); }
-  .lh-dot[data-rung="symp"] { background: #B89150; }
-  .lh-dot[data-rung="dorsal"] { background: var(--hypo); }
-  .lh-dot.lit { box-shadow: 0 0 0 6px rgba(232,193,90,.35), 0 1px 4px rgba(42,36,32,.3); }
-  .lh-pop { position: absolute; z-index: 7; min-width: 150px; max-width: 190px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: .6rem .75rem; box-shadow: var(--shadow-soft); opacity: 0; transform: translateY(4px); transition: opacity 200ms, transform 200ms; pointer-events: none; }
-  .lh-dot:hover + .lh-pop { opacity: 1; transform: translateY(0); }
-  .lh-pop .nm { display: block; font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--ink); }
-  .lh-pop .mn { display: block; font-size: .74rem; color: var(--ink-soft); margin-top: .15rem; line-height: 1.4; }
-  .lh-hint { position: absolute; right: 8px; bottom: 8px; z-index: 6; font-size: .68rem; color: var(--ink-soft); background: rgba(251,247,239,.85); border: 1px solid var(--line); border-radius: 999px; padding: .2em .6em; pointer-events: none; }
-
-  .rung-card {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    padding: 1.4rem clamp(1.2rem, 3vw, 1.8rem);
-    box-shadow: var(--shadow-soft);
-    border-left: 4px solid;
-    transition: border-color 300ms, box-shadow 300ms;
-  }
-  .rung-card[data-rung="ventral"] { border-left-color: var(--green); }
-  .rung-card[data-rung="symp"]    { border-left-color: #B89150; }
-  .rung-card[data-rung="dorsal"]  { border-left-color: var(--hypo); }
-
-  .rung-card.active { box-shadow: 0 0 0 2px currentColor, var(--shadow-lift); }
-  .rung-card[data-rung="ventral"].active { color: var(--green); }
-  .rung-card[data-rung="symp"].active    { color: #B89150; }
-  .rung-card[data-rung="dorsal"].active  { color: var(--hypo); }
-
-  .rung-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-bottom: 0.6rem;
-  }
-  .rung-card h3 {
-    font-family: var(--serif);
-    font-size: 1.3rem;
-    font-style: italic;
-    font-weight: 500;
-    color: var(--ink);
-  }
-  .rung-card .stage {
-    font-family: var(--sans);
-    font-size: 0.74rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
-  .rung-card .prompt {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1rem;
-    color: var(--ink-soft);
-    line-height: 1.55;
-    margin-bottom: 0.9rem;
-  }
-  .rung-card textarea {
-    width: 100%;
-    min-height: 90px;
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    padding: 0.9rem 1rem;
-    font-family: var(--serif);
-    font-size: 1rem;
-    color: var(--ink);
-    background: var(--sand);
-    line-height: 1.55;
-    resize: vertical;
-    outline: none;
-    transition: border-color 240ms, background 240ms, box-shadow 240ms;
-  }
-  .rung-card textarea:focus {
-    border-color: var(--ink);
-    background: var(--paper);
-  }
-  .rung-card textarea::placeholder {
-    color: var(--ink-faint);
-    font-style: italic;
-    opacity: 0.6;
-  }
-
   /* ---------- panel: LOG ---------- */
   .log-toolbar {
     display: flex;
@@ -1480,8 +1332,7 @@
     <button class="tab" role="tab" aria-selected="false" data-tab="forecast"><span class="num">ii.</span>The forecast</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="zones"><span class="num">iii.</span>My sea</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="window"><span class="num">iv.</span>My sails</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="ladder"><span class="num">v.</span>The lighthouse</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="log"><span class="num">vi.</span>My log</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="log"><span class="num">v.</span>My log</button>
   </div>
 </div>
 
@@ -1751,63 +1602,6 @@
     </div>
   </section>
 
-  <!-- ----- LADDER ----- -->
-  <section class="panel" data-panel="ladder" role="tabpanel">
-    <div class="panel-head">
-      <h2>The <em class="swash">lighthouse</em></h2>
-      <p>One lighthouse, standing through every weather. At the top, the lamp is lit and the beam reaches out — open, here, connected. In the middle, the seas rise and the wind gets up — stirred, energy looking for somewhere to go. At the bottom, the fog rolls in and the light dims — quiet, far away. The lighthouse doesn't move; only the weather does. Drag the marker up toward the light or down to the rocks to show where you are today — hover each point to see what it means.</p>
-    </div>
-
-    <div class="ladder-wrap">
-
-      <div class="lh-vis">
-        <div class="lh-stage" id="lhStage">
-          <img src="lighthousepng.png" alt="watercolour lighthouse">
-          <div class="lh-track"></div>
-          <div class="lh-dot" data-rung="ventral" style="left:30%;top:18%"></div>
-          <div class="lh-pop" style="left:38%;top:9%"><span class="nm">In the light</span><span class="mn">the lamp lit, the beam reaching — open, here, connected</span></div>
-          <div class="lh-dot" data-rung="symp" style="left:30%;top:42%"></div>
-          <div class="lh-pop" style="left:38%;top:34%"><span class="nm">Out in the storm</span><span class="mn">the seas rising — stirred, energy looking for somewhere to go</span></div>
-          <div class="lh-dot" data-rung="dorsal" style="left:28%;top:66%"></div>
-          <div class="lh-pop" style="left:36%;top:60%"><span class="nm">Lost in the fog</span><span class="mn">the light dimmed — quiet, far away, still standing</span></div>
-          <div class="lh-marker" id="lhMarker"></div>
-          <div class="lh-hint">drag ↕ · hover the dots</div>
-        </div>
-      </div>
-
-      <div class="ladder-cards">
-
-        <div class="rung-card" data-rung="ventral">
-          <div class="rung-head">
-            <h3>In the light</h3>
-            <span class="stage">safe · connected · social</span>
-          </div>
-          <p class="prompt">What people, places or practices help you feel safe and connected?</p>
-          <textarea data-rung="ventral" placeholder="Sunday mornings, the dog, voice notes from a friend, a particular bench…"></textarea>
-        </div>
-
-        <div class="rung-card" data-rung="symp">
-          <div class="rung-head">
-            <h3>Out in the storm</h3>
-            <span class="stage">mobilised · fight · flight</span>
-          </div>
-          <p class="prompt">What stirs this up for you? What small things help you settle?</p>
-          <textarea data-rung="symp" placeholder="Back-to-back messages stir it up. A walk around the block, a glass of water, ten slow breaths…"></textarea>
-        </div>
-
-        <div class="rung-card" data-rung="dorsal">
-          <div class="rung-head">
-            <h3>Lost in the fog</h3>
-            <span class="stage">shutdown · collapse · freeze</span>
-          </div>
-          <p class="prompt">What tends to pull you into the quiet? What helps you gently come back?</p>
-          <textarea data-rung="dorsal" placeholder="Sunday afternoons after a busy week. A warm shower, a small task, a familiar voice…"></textarea>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
   <!-- ----- LOG ----- -->
   <section class="panel" data-panel="log" role="tabpanel">
     <div class="panel-head">
@@ -1822,7 +1616,7 @@
         <button class="btn btn-ghost" id="sendCoachBtn">Send to your coach</button>
       </div>
     </div>
-    <p class="log-hint" id="logHint">A snapshot to take to a session — includes any moments, sails and lighthouse notes you've added. Opens in your email; you choose what to send and to whom.</p>
+    <p class="log-hint" id="logHint">A snapshot to take to a session — includes any moments and sails notes you've added. Opens in your email; you choose what to send and to whom.</p>
 
     <div id="logBody"></div>
   </section>
@@ -1859,12 +1653,6 @@
       hypo:  { body: [], thoughts: [], behaviour: [], fawn: {} }
     },
     window: { widens: [], narrows: [] },
-    ladder: {
-      ventral: '',
-      symp: '',
-      dorsal: '',
-      pos: 50
-    },
     forecast: { state: 12, trend: 'holding', signs: [], checked: {} },
     log: []
   };
@@ -1883,7 +1671,6 @@
           hypo:  Object.assign({ body: [], thoughts: [], behaviour: [], fawn: {} }, (saved.zones || {}).hypo)
         },
         window: Object.assign({ widens: [], narrows: [] }, saved.window || {}),
-        ladder: Object.assign({ ventral: '', symp: '', dorsal: '', pos: 50 }, saved.ladder || {}),
         forecast: Object.assign({ state: 12, trend: 'holding', signs: [], checked: {} }, saved.forecast || {}),
         log: Array.isArray(saved.log) ? saved.log : []
       });
@@ -2176,59 +1963,6 @@
     });
   });
 
-  // -------- LIGHTHOUSE --------
-  const lhStage = document.getElementById('lhStage');
-  const lhMarker = document.getElementById('lhMarker');
-  const LH_TOP = 18, LH_BOT = 66;   // marker travel %, light (top) → rocks (bottom)
-  function lhPosToTop(p) { return LH_BOT - (p / 100) * (LH_BOT - LH_TOP); }   // p100 -> 18% (light), p0 -> 66% (rocks)
-  function lhStateFromPos(p) { return p > 66 ? 'ventral' : p < 34 ? 'dorsal' : 'symp'; }
-
-  function lhRender(p, animated) {
-    lhMarker.classList.toggle('grabbing', !animated);
-    lhMarker.style.top = lhPosToTop(p) + '%';
-    const s = lhStateFromPos(p);
-    document.querySelectorAll('.lh-dot').forEach(d => d.classList.toggle('lit', d.dataset.rung === s));
-    document.querySelectorAll('.rung-card').forEach(c => c.classList.toggle('active', c.dataset.rung === s));
-    state.ladder.lhpos = p;
-    debouncedSave();
-  }
-
-  let lhDrag = false;
-  function lhYToPos(clientY) {
-    const r = lhStage.getBoundingClientRect();
-    const topPct = (clientY - r.top) / r.height * 100;
-    return Math.max(0, Math.min(100, (LH_BOT - topPct) / (LH_BOT - LH_TOP) * 100));
-  }
-  function lhStart(evt) { lhDrag = true; lhMarker.classList.add('grabbing'); lhMove(evt); evt.preventDefault(); }
-  function lhMove(evt) { if (!lhDrag) return; const y = evt.touches ? evt.touches[0].clientY : evt.clientY; lhRender(lhYToPos(y), false); evt.preventDefault(); }
-  function lhEnd() { if (!lhDrag) return; lhDrag = false; lhMarker.classList.remove('grabbing'); }
-
-  lhMarker.addEventListener('mousedown', lhStart);
-  lhMarker.addEventListener('touchstart', lhStart, { passive: false });
-  lhStage.addEventListener('mousedown', e => { if (!e.target.classList.contains('lh-dot')) lhStart(e); });
-  lhStage.addEventListener('touchstart', e => { if (!e.target.classList.contains('lh-dot')) lhStart(e); }, { passive: false });
-  document.addEventListener('mousemove', lhMove);
-  document.addEventListener('touchmove', lhMove, { passive: false });
-  document.addEventListener('mouseup', lhEnd);
-  document.addEventListener('touchend', lhEnd);
-  document.addEventListener('touchcancel', lhEnd);
-
-  // tap a card to send the marker there
-  document.querySelectorAll('.rung-card').forEach(c => c.addEventListener('click', e => {
-    if (e.target.tagName === 'TEXTAREA') return;
-    const r = c.dataset.rung;
-    lhRender(r === 'ventral' ? 90 : r === 'dorsal' ? 10 : 50, true);
-  }));
-
-  // ladder textareas
-  document.querySelectorAll('.rung-card textarea[data-rung]').forEach(ta => {
-    ta.value = state.ladder[ta.dataset.rung] || '';
-    ta.addEventListener('input', () => {
-      state.ladder[ta.dataset.rung] = ta.value;
-      debouncedSave();
-    });
-  });
-
   // -------- LOG RENDER --------
   const logBody = document.getElementById('logBody');
   const logCount = document.getElementById('logCount');
@@ -2293,8 +2027,7 @@
   function hasAnyCapturedData() {
     return state.log.length > 0
       || state.window.widens.length > 0
-      || state.window.narrows.length > 0
-      || Boolean(state.ladder.ventral || state.ladder.symp || state.ladder.dorsal);
+      || state.window.narrows.length > 0;
   }
 
   function buildLogText() {
@@ -2326,18 +2059,6 @@
       if (state.window.narrows.length) lines.push('What takes the wind out: ' + state.window.narrows.join(', '));
     }
 
-    const ladderNotes = [
-      ['In the light', state.ladder.ventral],
-      ['Out in the storm', state.ladder.symp],
-      ['Lost in the fog', state.ladder.dorsal]
-    ].filter(([, text]) => text && text.trim());
-    if (ladderNotes.length) {
-      lines.push('');
-      lines.push('—————————————————————');
-      lines.push('THE LIGHTHOUSE');
-      ladderNotes.forEach(([label, text]) => lines.push(`${label}: ${text}`));
-    }
-
     return lines.join('\n');
   }
 
@@ -2357,7 +2078,7 @@
   const sendCoachBtn = document.getElementById('sendCoachBtn');
   sendCoachBtn.addEventListener('click', () => {
     if (!hasAnyCapturedData()) {
-      alert('Nothing kept yet — log a moment, note what fills your sails, or add a lighthouse reflection first.');
+      alert('Nothing kept yet — log a moment or note what fills your sails first.');
       return;
     }
     const subject = encodeURIComponent('A snapshot from my Porthole log');
@@ -2474,7 +2195,6 @@
   // restore slider position
   slider.value = String(state.sliderPos);
   applyPosition(state.sliderPos);
-  lhRender(state.ladder.lhpos != null ? state.ladder.lhpos : 90, true);
 
 })();
 </script>
