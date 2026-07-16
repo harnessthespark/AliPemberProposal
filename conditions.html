@@ -119,33 +119,6 @@
     max-width: 44ch; margin: 1.2em auto 0; line-height: 1.55;
   }
 
-  /* lettuce quote */
-  .quote-wrap {
-    position: relative; z-index: 2;
-    max-width: 720px; margin: 0 auto;
-    padding: 0 clamp(1.2rem, 5vw, 3rem) clamp(2rem, 4vw, 3rem);
-    opacity: 0; transform: translateY(16px);
-    animation: rise 1s 0.3s cubic-bezier(.2,.7,.2,1) forwards;
-  }
-  .quote {
-    background: var(--paper); border-left: 3px solid var(--sail);
-    border-radius: var(--r-md);
-    padding: clamp(1.4rem, 3vw, 2rem) clamp(1.6rem, 3vw, 2.4rem);
-    box-shadow: var(--shadow-soft);
-  }
-  .quote p {
-    font-family: var(--serif); font-style: italic; font-weight: 400;
-    font-size: clamp(1.05rem, 1.6vw, 1.18rem);
-    color: var(--ink); line-height: 1.55;
-    margin: 0 0 0.8em;
-  }
-  .quote p:last-of-type { margin-bottom: 1rem; }
-  .quote cite {
-    font-family: var(--sans); font-style: normal;
-    font-size: 0.78rem; color: var(--ink-faint);
-    letter-spacing: 0.18em; text-transform: uppercase;
-  }
-
   /* section */
   .section {
     position: relative; z-index: 2;
@@ -253,7 +226,7 @@
     position: relative; width: 100%; max-width: 720px;
     margin: 0 auto;
   }
-  .circles-figure img { width: 100%; height: auto; display: block; }
+  .circles-figure img, .circles-figure video { width: 100%; height: auto; display: block; }
   .port-hotspot {
     position: absolute; transform: translate(-50%, -50%);
     width: 19%; aspect-ratio: 1 / 1; border-radius: 50%;
@@ -271,20 +244,6 @@
   .port-hotspot.active {
     box-shadow: 0 0 0 4px rgba(255,255,255,0.6), 0 0 0 8px var(--green);
   }
-  .port-name {
-    font-family: var(--sans); font-weight: 700;
-    font-size: clamp(0.52rem, 1.5vw, 0.74rem);
-    letter-spacing: 0.18em; text-transform: uppercase;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(20,14,8,0.4);
-  }
-  .port-tag {
-    font-family: var(--serif); font-style: italic;
-    font-size: clamp(0.64rem, 1.7vw, 0.96rem);
-    color: #fff; line-height: 1.25;
-    text-shadow: 0 1px 2px rgba(20,14,8,0.4);
-  }
-
   /* circle detail panel */
   .circle-detail {
     margin: 2.5rem auto 0;
@@ -526,7 +485,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
-    .hero, .quote-wrap, .circle-detail { opacity: 1; transform: none; }
+    .hero, .circle-detail { opacity: 1; transform: none; }
   }
 </style>
 </head>
@@ -542,34 +501,16 @@
   <p class="tagline">Three places your motivation comes from, and a quiet look at what your day grows from. No judgement, no blame — just noticing.</p>
 </header>
 
-<section class="quote-wrap" aria-label="Opening quote">
-  <blockquote class="quote">
-    <p>"When you plant lettuce, if it does not grow well, you don't blame the lettuce. You look for reasons it is not doing well. It may need fertiliser, or more water, or less sun.</p>
-    <p>Blaming has no positive effect at all, nor does trying to persuade using reason and argument. That is my experience.</p>
-    <p>No blame, no reasoning, no argument, just understanding. If you understand, and you show that you understand, you can love, and the situation will change."</p>
-    <cite>— Thich Nhat Hanh</cite>
-  </blockquote>
-</section>
-
 <!-- ============ THREE CIRCLES ============ -->
 <section class="section" aria-label="Three circles">
   <h2 class="visually-hidden">Three circles</h2>
   <p class="visually-hidden">Three motivation systems. Each one is here for a reason. A healthy life isn't one without bracing or reaching — it's one where the three are in some kind of balance. Tap a circle to step into it.</p>
 
   <figure class="circles-figure">
-    <img src="conditions.png" alt="Three brass portholes showing the sea in three states — Bracing (stormy red water, seeking protection and safety), Reaching (a rising teal wave, seeking resources and reward), and Settling (calm layered water, seeking connection and safeness) — set between Stress and Rest.">
-    <button class="port-hotspot" data-c="threat" type="button" aria-pressed="false" aria-label="Bracing — seeking protection and safety" style="left:32%; top:42%;">
-      <span class="port-name">Bracing</span>
-      <span class="port-tag">seeking protection<br>and safety</span>
-    </button>
-    <button class="port-hotspot" data-c="drive" type="button" aria-pressed="false" aria-label="Reaching — seeking resources and reward" style="left:67%; top:42%;">
-      <span class="port-name">Reaching</span>
-      <span class="port-tag">seeking resources<br>and reward</span>
-    </button>
-    <button class="port-hotspot" data-c="sooth" type="button" aria-pressed="false" aria-label="Settling — seeking connection and safeness" style="left:50%; top:74%;">
-      <span class="port-name">Settling</span>
-      <span class="port-tag">seeking connection<br>and safeness</span>
-    </button>
+    <video src="conditions-circles.mp4" autoplay loop muted playsinline aria-label="Three brass portholes showing the sea in three states — Bracing (seeking safety), Reaching (seeking resource and reward), and Setting (seeking connection) — set between Stress and Rest."></video>
+    <button class="port-hotspot" data-c="threat" type="button" aria-pressed="false" aria-label="Bracing — seeking protection and safety" style="left:30%; top:44%;"></button>
+    <button class="port-hotspot" data-c="drive" type="button" aria-pressed="false" aria-label="Reaching — seeking resources and reward" style="left:70%; top:44%;"></button>
+    <button class="port-hotspot" data-c="sooth" type="button" aria-pressed="false" aria-label="Settling — seeking connection and safeness" style="left:50%; top:64%;"></button>
   </figure>
 
   <div class="circle-detail" id="circleDetail">
