@@ -1283,7 +1283,7 @@
   .fc-sea svg { position: absolute; inset: 0; width: 100%; height: 100%; }
   .fc-wave { opacity: 0.55; }
   .fc-sea-amp { transition: transform 500ms ease; transform-origin: center bottom; }
-  .fc-gale-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 500ms ease; pointer-events: none; }
+  .fc-band-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 500ms ease; pointer-events: none; }
 
   .fc-strip-label { display: flex; justify-content: space-between; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin: 0.5rem 0 0.2rem; }
   .fc-range { -webkit-appearance: none; appearance: none; width: 100%; height: 36px; background: transparent; cursor: grab; margin: 0; }
@@ -1438,7 +1438,9 @@
               <path class="fc-wave" id="fcW2" fill="#5E7488" d="" opacity="0.4"></path>
             </g>
           </svg>
-          <img class="fc-gale-img" id="fcGaleImg" src="forecast-gale.jpg" alt="">
+          <img class="fc-band-img" id="fcCalmImg" src="forecast-calm.jpg" alt="">
+          <img class="fc-band-img" id="fcBuildImg" src="forecast-building.jpg" alt="">
+          <img class="fc-band-img" id="fcGaleImg" src="forecast-gale.jpg" alt="">
         </div>
 
         <div class="fc-strip-label"><span>glassy calm</span><span>wind building</span><span>gale</span></div>
@@ -2120,6 +2122,8 @@
     const fcSeaAmp = document.getElementById('fcSeaAmp');
     const fcW1 = document.getElementById('fcW1');
     const fcW2 = document.getElementById('fcW2');
+    const fcCalmImg = document.getElementById('fcCalmImg');
+    const fcBuildImg = document.getElementById('fcBuildImg');
     const fcGaleImg = document.getElementById('fcGaleImg');
     const fcSigns = document.getElementById('fcSigns');
     const fcAdd = document.getElementById('fcAddSign');
@@ -2151,6 +2155,8 @@
       fcW1.setAttribute('d', wavePath(amp, 46));
       fcW2.setAttribute('d', wavePath(amp * 0.7, 58));
       fcSeaAmp.style.transform = 'scaleY(' + (1 + v / 140) + ')';
+      fcCalmImg.style.opacity = Math.max(0, Math.min(1, 1 - v / 35));
+      fcBuildImg.style.opacity = Math.max(0, Math.min(1, (v - 15) / 30, (75 - v) / 30));
       fcGaleImg.style.opacity = Math.max(0, Math.min(1, (v - 55) / 45));
       const sighted = Object.values(fcStore.checked).filter(Boolean).length;
       fcTail.textContent = sighted ? (sighted + ' sign' + (sighted > 1 ? 's' : '') + ' sighted on the horizon.') : 'No signs sighted yet — a clear glass.';
